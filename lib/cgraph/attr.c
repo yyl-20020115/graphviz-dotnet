@@ -80,7 +80,7 @@ Agsym_t *agnewsym(Agraph_t * g, char *name, char *value, int id, int kind)
 {
     Agsym_t *sym;
     sym = agalloc(g, sizeof(Agsym_t));
-    sym->kind = kind;
+    sym->kind =(unsigned char) kind;
     sym->name = agstrdup(g, name);
     sym->defval = agstrdup(g, value);
     sym->id = id;
@@ -111,7 +111,7 @@ static Agdatadict_t *agmakedatadict(Agraph_t * g)
     dd->dict.n = agdtopen(g, &AgDataDictDisc, Dttree);
     dd->dict.e = agdtopen(g, &AgDataDictDisc, Dttree);
     dd->dict.g = agdtopen(g, &AgDataDictDisc, Dttree);
-    if ((par = agparent(g))) {
+    if ((par = agparent(g)) != 0) {
 	parent_dd = agdatadict(par, FALSE);
 	assert(dd != parent_dd);
 	dtview(dd->dict.n, parent_dd->dict.n);
@@ -342,7 +342,7 @@ Agsym_t *agnxtattr(Agraph_t * g, int kind, Agsym_t * attr)
     Dict_t *d;
     Agsym_t *rv;
 
-    if ((d = agdictof(g, kind))) {
+    if ((d = agdictof(g, kind)) != 0) {
 	if (attr)
 	    rv = (Agsym_t *) dtnext(d, attr);
 	else
@@ -362,7 +362,7 @@ void agraphattr_init(Agraph_t * g)
 
     g->desc.has_attrs = 1;
     /* dd = */ agmakedatadict(g);
-    if (!(context = agparent(g)))
+    if ((context = agparent(g)) == 0)
 	context = g;
     /* attr = */ agmakeattrs(context, g);
 }
@@ -373,12 +373,12 @@ int agraphattr_delete(Agraph_t * g)
     Agattr_t *attr;
 
     Ag_G_global = g;
-    if ((attr = agattrrec(g))) {
+    if ((attr = agattrrec(g)) != 0) {
 	freeattr((Agobj_t *) g, attr);
 	agdelrec(g, attr->h.name);
     }
 
-    if ((dd = agdatadict(g, FALSE))) {
+    if ((dd = agdatadict(g, FALSE)) != 0) {
 	if (agdtclose(g, dd->dict.n)) return 1;
 	if (agdtclose(g, dd->dict.e)) return 1;
 	if (agdtclose(g, dd->dict.g)) return 1;
@@ -400,7 +400,7 @@ void agnodeattr_delete(Agnode_t * n)
 {
     Agattr_t *rec;
 
-    if ((rec = agattrrec(n))) {
+    if ((rec = agattrrec(n)) != 0) {
 	freeattr((Agobj_t *) n, rec);
 	agdelrec(n, AgDataRecName);
     }
@@ -419,7 +419,7 @@ void agedgeattr_delete(Agedge_t * e)
 {
     Agattr_t *rec;
 
-    if ((rec = agattrrec(e))) {
+    if ((rec = agattrrec(e)) != 0) {
 	freeattr((Agobj_t *) e, rec);
 	agdelrec(e, AgDataRecName);
     }
@@ -482,7 +482,7 @@ int agxset(void *obj, Agsym_t * sym, char *value)
 	/* also update dict default */
 	Dict_t *dict;
 	dict = agdatadict(g, FALSE)->dict.g;
-	if ((lsym = aglocaldictsym(dict, sym->name))) {
+	if ((lsym = aglocaldictsym(dict, sym->name)) != 0) {
 	    agstrfree(g, lsym->defval);
 	    lsym->defval = agstrdup(g, value);
 	} else {
@@ -545,7 +545,7 @@ int agcopyattr(void *oldobj, void *newobj)
     if (AGTYPE(oldobj) != AGTYPE(newobj))
 	return 1;
     sym = 0;
-    while ((sym = agnxtattr(g, AGTYPE(oldobj), sym))) {
+    while ((sym = agnxtattr(g, AGTYPE(oldobj), sym)) != 0) {
 	newsym = agattrsym(newobj, sym->name);
 	if (!newsym)
 	    return 1;

@@ -101,8 +101,8 @@ int aginternalmaplookup(Agraph_t * g, int objtype, char *str,
 
     if (objtype == AGINEDGE)
 	objtype = AGEDGE;
-    if ((d = g->clos->lookup_by_name[objtype])) {
-	if ((search_str = agstrbind(g, str))) {
+    if ((d = g->clos->lookup_by_name[objtype]) != 0) {
+	if ((search_str = agstrbind(g, str)) != 0) {
 	    template.str = search_str;
 	    sym = (IMapEntry_t *) dtsearch(d, &template);
 	    if (sym) {
@@ -144,7 +144,7 @@ static IMapEntry_t *find_isym(Agraph_t * g, int objtype, IDTYPE id)
 
     if (objtype == AGINEDGE)
 	objtype = AGEDGE;
-    if ((d = g->clos->lookup_by_id[objtype])) {
+    if ((d = g->clos->lookup_by_id[objtype]) != 0) {
 	itemplate.id = id;
 	isym = (IMapEntry_t *) dtsearch(d, &itemplate);
     } else
@@ -156,7 +156,7 @@ char *aginternalmapprint(Agraph_t * g, int objtype, IDTYPE id)
 {
     IMapEntry_t *isym;
 
-    if ((isym = find_isym(g, objtype, id)))
+    if ((isym = find_isym(g, objtype, id)) != 0)
 	return isym->str;
     return NILstr;
 }
@@ -168,7 +168,7 @@ int aginternalmapdelete(Agraph_t * g, int objtype, IDTYPE id)
 
     if (objtype == AGINEDGE)
 	objtype = AGEDGE;
-    if ((isym = find_isym(g, objtype, id))) {
+    if ((isym = find_isym(g, objtype, id)) != 0) {
 	dtdelete(g->clos->lookup_by_name[objtype], isym);
 	dtdelete(g->clos->lookup_by_id[objtype], isym);
 	agstrfree(g, isym->str);

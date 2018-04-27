@@ -140,7 +140,7 @@ char *pathcanon(char *path, int flags)
 		    c = *(t - 1);
 		    *(t - 1) = 0;
 		    dots = pathgetlink(phys, buf, sizeof(buf));
-		    *(t - 1) = c;
+		    *(t - 1) = (char)c;
 		    if (dots > 0) {
 			if ((t + dots + 1) >= e) { /* make sure path fits in buf */
 			    strcpy(path, s);

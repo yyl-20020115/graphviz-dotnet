@@ -72,24 +72,24 @@ char *pathpath(register char *path, const char *p, const char *a, int mode)
     }
     if (*p == '/')
 	a = 0;
-    else if ((s = (char *) a)) {
+    else if ((s = (char *) a) != 0) {
 	x = s;
 	if (strchr(p, '/')) {
 	    a = p;
 	    p = "..";
 	} else
 	    a = 0;
-	if ((!cmd || *cmd) &&
-	    (strchr(s, '/') ||
-	     (((s = cmd) || (opt_info_argv && (s = *opt_info_argv))) &&
-	      strchr(s, '/') && !strchr(s, '\n') && !access(s, F_OK)) ||
-	     (environ && (s = *environ) && *s++ == '_' &&
-	      *s++ == '=' && strchr(s, '/') && !strneq(s, "/bin/", 5) &&
-	      !strneq(s, "/usr/bin/", 9)) ||
-	     (*x && !access(x, F_OK) && (s = getenv("PWD")) && *s == '/')
+	if ((cmd==0 || *cmd!=0) &&
+	    (strchr(s, '/')!=0 ||
+	     (((s = cmd) != 0 || (opt_info_argv != 0 && (s = *opt_info_argv) != 0)) &&
+	      strchr(s, '/') != 0 && strchr(s, '\n')==0 && access(s, F_OK)==0) ||
+	     (environ != 0 && (s = *environ) != 0 && *s++ == '_' &&
+	      *s++ == '=' && strchr(s, '/') != 0 && strneq(s, "/bin/", 5)==0 &&
+	      strneq(s, "/usr/bin/", 9)==0) ||
+	     (*x!=0 && access(x, F_OK)==0 && (s = getenv("PWD") ) != 0 && *s == '/')
 	    )
 	    ) {
-	    if (!cmd)
+	    if (cmd==0)
 		cmd = strdup(s);
 	    if (strlen(s) < (sizeof(buf) - 6)) {
 		s = strcopy(path, s);
@@ -104,7 +104,7 @@ char *pathpath(register char *path, const char *p, const char *a, int mode)
 		    while (*--s != '/');
 		    strcpy(s + 1, "bin");
 		    if (pathexists(path, PATH_EXECUTE)) {
-			if ((s = pathaccess(path, path, p, a, mode)))
+			if ((s = pathaccess(path, path, p, a, mode)) != 0)
 			    return path == buf ? strdup(s) : s;
 			goto normal;
 		    }
@@ -114,8 +114,8 @@ char *pathpath(register char *path, const char *p, const char *a, int mode)
 	}
     }
     x = !a && strchr(p, '/') ? "" : pathbin();
-    if (!(s = pathaccess(path, x, p, a, mode)) && !*x
-	&& (x = getenv("FPATH")))
+    if ((s = pathaccess(path, x, p, a, mode))==0 && !*x
+	&& (x = getenv("FPATH")) != 0)
 	s = pathaccess(path, x, p, a, mode);
     return (s && path == buf) ? strdup(s) : s;
 }

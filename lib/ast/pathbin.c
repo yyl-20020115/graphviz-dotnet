@@ -26,7 +26,7 @@ char *pathbin(void)
 
     static char *val;
 
-    if ((!(bin = getenv("PATH")) || !*bin) && !(bin = val)) {
+    if (((bin = getenv("PATH"))==0 || !*bin) && (bin = val)==0) {
 	bin = "/bin:/usr/bin:/usr/local/bin";
 	val = bin;
     }

@@ -138,11 +138,11 @@ finalCC(graph_t * g, int c_cnt, graph_t ** cc, point * pts, graph_t * rg,
     else
 	margin = late_int (rg, G_margin, CL_OFFSET, 0);
     pt.x = -bb.LL.x + margin;
-    pt.y = -bb.LL.y + margin + GD_border(rg)[BOTTOM_IX].y;
+    pt.y = (int)(-bb.LL.y + margin + GD_border(rg)[BOTTOM_IX].y);
     bb.LL.x = 0;
     bb.LL.y = 0;
     bb.UR.x += pt.x + margin;
-    bb.UR.y += pt.y + margin + GD_border(rg)[TOP_IX].y;
+    bb.UR.y +=(int)( pt.y + margin + GD_border(rg)[TOP_IX].y);
 
     /* translate nodes */
     if (c_cnt) {
@@ -326,10 +326,10 @@ static char *portName(graph_t * g, bport_t * p)
 
     len += strlen(agnameof(g)) + strlen(agnameof(h)) + strlen(agnameof(t));
     if (len >= BSZ)
-	sprintf(buf, "_port_%s_%s_%s_%ld", agnameof(g), agnameof(t), agnameof(h),
+	sprintf(buf, "_port_%s_%s_%s_%lld", agnameof(g), agnameof(t), agnameof(h),
 		(uint64_t)AGSEQ(e));
     else
-	sprintf(buf, "_port_%s_(%d)_(%d)_%ld",agnameof(g), ND_id(t), ND_id(h),
+	sprintf(buf, "_port_%s_(%d)_(%d)_%lld",agnameof(g), ND_id(t), ND_id(h),
 		(uint64_t)AGSEQ(e));
     return buf;
 }
@@ -406,7 +406,7 @@ copyAttr (graph_t* g, graph_t* dg, char* attr)
     char*     ov_val;
     Agsym_t*  ov;
 
-    if ((ov = agattr(g,AGRAPH, attr, NULL))) {
+    if ((ov = agattr(g,AGRAPH, attr, NULL)) != 0) {
 	ov_val = agxget(g,ov);
 	ov = agattr(dg,AGRAPH, attr, NULL);
 	if (ov)
@@ -543,7 +543,7 @@ static graph_t *deriveGraph(graph_t * g, layout_info * infop)
     }
 
     /* transform ports */
-    if ((pp = PORTS(g))) {
+    if ((pp = PORTS(g)) != 0) {
 	bport_t *pq;
 	node_t *m;
 	int sz = NPORTS(g);
@@ -950,12 +950,12 @@ void layout(graph_t * g, layout_info * infop)
     /* At present, this does not record port node info */
     /* In fact, as noted above, we have removed port nodes */
     for (dn = agfstnode(dg); dn; dn = agnxtnode(dg, dn)) {
-	if ((sg = ND_clust(dn))) {
+	if ((sg = ND_clust(dn)) != 0) {
 	    BB(sg).LL.x = ND_pos(dn)[0] - ND_width(dn) / 2;
 	    BB(sg).LL.y = ND_pos(dn)[1] - ND_height(dn) / 2;
 	    BB(sg).UR.x = BB(sg).LL.x + ND_width(dn);
 	    BB(sg).UR.y = BB(sg).LL.y + ND_height(dn);
-	} else if ((n = ANODE(dn))) {
+	} else if ((n = ANODE(dn)) != 0) {
 	    ND_pos(n)[0] = ND_pos(dn)[0];
 	    ND_pos(n)[1] = ND_pos(dn)[1];
 	}
@@ -1022,9 +1022,9 @@ static void init_info(graph_t * g, layout_info * infop)
 static void
 mkClusters (graph_t * g, clist_t* pclist, graph_t* parent)
 {
-    graph_t* subg;
-    clist_t  list;
-    clist_t* clist;
+    graph_t* subg = 0;
+	clist_t  list = { 0 };
+    clist_t* clist = 0;
 
     if (pclist == NULL) {
 	clist = &list;
@@ -1059,7 +1059,7 @@ static void fdp_init_graph(Agraph_t * g)
 {
     setEdgeType (g, ET_LINE);
     GD_alg(g) = (void *) NEW(gdata);	/* freed in cleanup_graph */
-    GD_ndim(g) = late_int(g, agattr(g,AGRAPH, "dim", NULL), 2, 2);
+    GD_ndim(g) = (unsigned short)late_int(g, agattr(g,AGRAPH, "dim", NULL), 2, 2);
     Ndim = GD_ndim(g) = MIN(GD_ndim(g), MAXDIM);
 
     mkClusters (g, NULL, g);

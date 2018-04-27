@@ -148,6 +148,7 @@ createSNode (sgraph* g)
 static void
 addEdgeToNode (snode* np, sedge* e, int idx)
 {
+	(void)e;
     np->adj_edge_list[np->n_adj] = idx;
     np->n_adj++;
 }
@@ -231,7 +232,7 @@ shortPath (sgraph* g, snode* from, snode* to)
     N_DAD(from) = NULL;
     N_VAL(from) = 0;
     
-    while ((n = PQremove())) {
+    while ((n = PQremove()) != 0) {
 #ifdef DEBUG
 	fprintf (stderr, "process %d\n", n->index);
 #endif
@@ -241,7 +242,7 @@ shortPath (sgraph* g, snode* from, snode* to)
 	    e = &(g->edges[n->adj_edge_list[y]]);
 	    adjn = adjacentNode(g, e, n);
 	    if (N_VAL(adjn) < 0) {
-		d = -(N_VAL(n) + E_WT(e));
+		d = -(int)(N_VAL(n) + E_WT(e));
 		if (N_VAL(adjn) == UNSEEN) {
 #ifdef DEBUG
 		    fprintf (stderr, "new %d (%d)\n", adjn->index, -d);

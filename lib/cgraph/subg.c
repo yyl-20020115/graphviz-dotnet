@@ -56,7 +56,7 @@ Agraph_t *agsubg(Agraph_t * g, char *name, int cflag)
 
     if (name && agmapnametoid(g, AGRAPH, name, &id, FALSE)) {
 	/* might already exist */
-	if ((subg = agfindsubg_by_id(g, id)))
+	if ((subg = agfindsubg_by_id(g, id)) != 0)
 	    return subg;
     }
 

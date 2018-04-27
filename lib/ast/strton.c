@@ -73,7 +73,7 @@ long strton(const char *a, char **e, char *basep, int m)
 	base = 0;
     while (isspace(*s))
 	s++;
-    if ((negative = (*s == '-')) || *s == '+')
+    if ((negative = (*s == '-')) != 0 || *s == '+')
 	s++;
     p = s;
     if (base <= 1) {
@@ -101,7 +101,7 @@ long strton(const char *a, char **e, char *basep, int m)
 	    }
 	}
 	if (basep && base)
-	    *basep = base;
+	    *basep =(char) base;
     }
     if (base >= 2 && base <= SF_RADIX)
 	m = -1;

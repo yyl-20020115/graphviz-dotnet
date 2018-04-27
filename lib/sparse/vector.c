@@ -75,6 +75,7 @@ int Vector_get_length(Vector v){
 /*---------------- integer vector --------------- */
 
 void intdealloactor(void *v){
+	(void)v;
 }
 
 Vector IntegerVector_new(int len){
@@ -86,7 +87,8 @@ Vector IntegerVector_add(Vector v, int i){
 }
 
 void IntegerVector_delete(Vector v){
-  return Vector_delete(v);
+  //return
+	  Vector_delete(v);
 }
 
 int* IntegerVector_get(Vector v, int i){
@@ -110,6 +112,7 @@ Vector IntegerVector_reset(Vector v, int content, int pos){
 /*---------------- string vector --------------- */
 
 void nulldealloactor(void *v){
+	(void)v;
   return;
 }
 void strdealloactor(void *v){
@@ -132,7 +135,8 @@ Vector StringVector_add(Vector v, char *s){
 }
 
 void StringVector_delete(Vector v){
-  return Vector_delete(v);
+  //return 
+	  Vector_delete(v);
 }
 
 char** StringVector_get(Vector v, int i){

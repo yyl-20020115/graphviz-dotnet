@@ -39,6 +39,6 @@ int stresc(register char *s)
 	    *t = 0;
 	    return (t - b);
 	}
-	*t++ = c;
+	*t++ = (char)c;
     }
 }

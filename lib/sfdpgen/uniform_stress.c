@@ -33,7 +33,9 @@ UniformStressSmoother UniformStressSmoother_new(int dim, SparseMatrix A, real *x
   int nz;
   real *d, *w, *a = (real*) A->a;
   real diag_d, diag_w, dist, epsilon = 0.01;
-
+  (void)flag;
+  (void)x;
+  (void)dim;
   assert(SparseMatrix_is_symmetric(A, FALSE));
 
   sm = MALLOC(sizeof(struct StressMajorizationSmoother_struct));

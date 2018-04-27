@@ -110,7 +110,7 @@ sidePt (snode* ptr, cell* cp)
 static void
 setSeg (segment* sp, int dir, double fix, double b1, double b2, int l1, int l2)
 {
-    sp->isVert = dir;
+    sp->isVert = dir!=0;
     sp->comm_coord = fix;
     if (b1 < b2) {
 	sp->p.p1 = b1;
@@ -252,6 +252,9 @@ typedef struct {
 static void
 freeChannel (Dt_t* d, channel* cp, Dtdisc_t* disc)
 {
+	(void)disc;
+	(void)d;
+
     free_graph (cp->G);
     free (cp->seg_list);
     free (cp);
@@ -260,6 +263,9 @@ freeChannel (Dt_t* d, channel* cp, Dtdisc_t* disc)
 static void
 freeChanItem (Dt_t* d, chanItem* cp, Dtdisc_t* disc)
 {
+	(void)disc;
+	(void)d;
+
     dtclose (cp->chans);
     free (cp);
 }
@@ -276,6 +282,9 @@ freeChanItem (Dt_t* d, chanItem* cp, Dtdisc_t* disc)
 static int
 chancmpid(Dt_t* d, paird* key1, paird* key2, Dtdisc_t* disc)
 {
+	(void)disc;
+	(void)d;
+
   if (key1->p1 > key2->p1) {
     if (key1->p2 <= key2->p2) return 0;
     else return 1;
@@ -290,6 +299,9 @@ chancmpid(Dt_t* d, paird* key1, paird* key2, Dtdisc_t* disc)
 static int
 dcmpid(Dt_t* d, double* key1, double* key2, Dtdisc_t* disc)
 {
+	(void)disc;
+	(void)d;
+
   if (*key1 > *key2) return 1;
   else if (*key1 < *key2) return -1;
   else return 0;
@@ -347,7 +359,7 @@ extractHChans (maze* mp)
 	if (IsHScan(cp)) continue;
 
 	/* move left */
-	while ((np = cp->sides[M_LEFT]) && (nextcp = np->cells[0]) &&
+	while ((np = cp->sides[M_LEFT])!=0 && (nextcp = np->cells[0]) != 0 &&
 	    !IsNode(nextcp)) {
 	    cp = nextcp;
 	}
@@ -358,7 +370,7 @@ extractHChans (maze* mp)
 
 	/* move right */
 	cp->flags |= MZ_HSCAN;
-	while ((np = cp->sides[M_RIGHT]) && (nextcp = np->cells[1]) &&
+	while ((np = cp->sides[M_RIGHT]) != 0 && (nextcp = np->cells[1]) != 0 &&
 	    !IsNode(nextcp)) {
 	    cp = nextcp;
 	    cp->flags |= MZ_HSCAN;
@@ -384,7 +396,7 @@ extractVChans (maze* mp)
 	if (IsVScan(cp)) continue;
 
 	/* move down */
-	while ((np = cp->sides[M_BOTTOM]) && (nextcp = np->cells[0]) &&
+	while ((np = cp->sides[M_BOTTOM]) != 0 && (nextcp = np->cells[0]) != 0 &&
 	    !IsNode(nextcp)) {
 	    cp = nextcp;
 	}
@@ -395,7 +407,7 @@ extractVChans (maze* mp)
 
 	/* move up */
 	cp->flags |= MZ_VSCAN;
-	while ((np = cp->sides[M_TOP]) && (nextcp = np->cells[1]) &&
+	while ((np = cp->sides[M_TOP]) != 0 && (nextcp = np->cells[1]) != 0 &&
 	    !IsNode(nextcp)) {
 	    cp = nextcp;
 	    cp->flags |= MZ_VSCAN;
@@ -854,12 +866,12 @@ is_parallel(segment* s1, segment* s2)
 static pair 
 decide_point(segment* si, segment* sj, int dir1, int dir2)
 {
-    int prec, ans = 0, temp;
+    int prec=0, ans = 0, temp=0;
     pair ret;
-    segment* np1;
-    segment* np2;
+    segment* np1=0;
+    segment* np2=0;
     
-    while ((np1 = next_seg(si,dir1)) && (np2 = next_seg(sj,dir2)) &&
+    while ((np1 = next_seg(si,dir1)) != 0 && (np2 = next_seg(sj,dir2)) != 0 &&
 	is_parallel(np1, np2)) {
 	ans++;
 	si = np1;
@@ -1197,7 +1209,7 @@ attachOrthoEdges (Agraph_t* g, maze* mp, int n_edges, route* route_list, splineI
 	if (Verbose > 1)
 	    fprintf(stderr, "ortho %s %s\n", agnameof(agtail(e)),agnameof(aghead(e)));
 	clip_and_install(e, aghead(e), ispline, npts, sinfo);
-	if (doLbls && (lbl = ED_label(e)) && !lbl->set)
+	if (doLbls && (lbl = ED_label(e)) != 0 && !lbl->set)
 	    addEdgeLabels(g, e, p1, q1);
     }
     free(ispline);
@@ -1236,20 +1248,20 @@ static splineInfo sinfo = { swap_ends_p, spline_merge, 1, 1 };
 void
 orthoEdges (Agraph_t* g, int doLbls)
 {
-    sgraph* sg;
-    maze* mp;
-    int n_edges;
-    route* route_list;
-    int i, gstart;
-    Agnode_t* n;
-    Agedge_t* e;
-    snode* sn;
-    snode* dn;
+    sgraph* sg = 0;
+    maze* mp = 0;
+    int n_edges = 0;
+    route* route_list = 0;
+    int i = 0, gstart = 0;
+    Agnode_t* n = 0;
+    Agedge_t* e = 0;
+    snode* sn = 0;
+    snode* dn = 0;
     epair_t* es = N_GNEW(agnedges(g), epair_t);
-    cell* start;
-    cell* dest;
-    PointSet* ps;
-    textlabel_t* lbl;
+    cell* start = 0;
+    cell* dest = 0;
+    PointSet* ps = 0;
+    textlabel_t* lbl = 0;
 
     if (Concentrate) 
 	ps = newPS();
@@ -1331,7 +1343,7 @@ orthoEdges (Agraph_t* g, int doLbls)
         start = CELL(agtail(e));
         dest = CELL(aghead(e));
 
-	if (doLbls && (lbl = ED_label(e)) && lbl->set) {
+	if (doLbls && (lbl = ED_label(e)) != 0 && lbl->set) {
 	}
 	else {
 	    if (start == dest)
@@ -1415,7 +1427,7 @@ static char* epilog2 =
 static point
 coordOf (cell* cp, snode* np)
 {
-    point p;
+	point p = { 0 };
     if (cp->sides[M_TOP] == np) {
 	p.x = (cp->bb.LL.x + cp->bb.UR.x)/2;
 	p.y = cp->bb.UR.y;

@@ -27,7 +27,7 @@ static void setNStepsToLeaf(Agraph_t * g, Agnode_t * n, Agnode_t * prev)
     Agnode_t *next;
     Agedge_t *ep;
 
-    int nsteps = SLEAF(n) + 1;
+    int nsteps = (int)SLEAF(n) + 1;
 
     for (ep = agfstedge(g, n); ep; ep = agnxtedge(g, ep, n)) {
 	if ((next = agtail(ep)) == n)
@@ -108,7 +108,7 @@ static Agnode_t *findCenterNode(Agraph_t * g)
 
     for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
 	if (SLEAF(n) > maxNStepsToLeaf) {
-	    maxNStepsToLeaf = SLEAF(n);
+	    maxNStepsToLeaf = (int)SLEAF(n);
 	    center = n;
 	}
     }
@@ -168,7 +168,7 @@ static void* pull(queue* q)
 {
     item_t* ip;
     void* p;
-    if ((ip = q->head)) {
+    if ((ip = q->head) != 0) {
 	p = ip->p;
 	q->head = ip->s;
 	free (ip);
@@ -191,8 +191,8 @@ static void setNStepsToCenter(Agraph_t * g, Agnode_t * n)
 
     qd.head = qd.tail = NULL;
     push(q,n);
-    while ((n = (Agnode_t*)pull(q))) {
-	int nsteps = SCENTER(n) + 1;
+    while ((n = (Agnode_t*)pull(q))!=0) {
+	int nsteps = (int)SCENTER(n) + 1;
 	for (ep = agfstedge(g, n); ep; ep = agnxtedge(g, ep, n)) {
 	    if (wt && streq(ag_xget(ep,wt),"0")) continue;
 	    if ((next = agtail(ep)) == n)
@@ -216,7 +216,7 @@ static int setParentNodes(Agraph_t * sg, Agnode_t * center)
 {
     Agnode_t *n;
     int maxn = 0;
-    int unset = SCENTER(center);
+    int unset = (int)SCENTER(center);
 
     SCENTER(center) = 0;
     SPARENT(center) = 0;
@@ -228,7 +228,7 @@ static int setParentNodes(Agraph_t * sg, Agnode_t * center)
 	    return -1;
 	}
 	else if (SCENTER(n) > maxn) {
-	    maxn = SCENTER(n);
+	    maxn = (int)SCENTER(n);
 	}
     }
     return maxn;
@@ -335,13 +335,13 @@ getRankseps (Agraph_t* g, int maxrank)
     double* ranks = N_NEW(maxrank+1, double);
     double xf = 0.0, delx = 0.0, d;
 
-    if ((p = late_string(g, agfindgraphattr(g->root, "ranksep"), NULL))) {
+    if ((p = late_string(g, agfindgraphattr(g->root, "ranksep"), NULL)) != 0) {
 	while ((rk <= maxrank) && ((d = strtod (p, &endp)) > 0)) {
 	    delx = MAX(d, MIN_RANKSEP);
 	    xf += delx;
 	    ranks[rk++] = xf;
 	    p = endp;
-	    while ((c = *p) && (isspace(c) || (c == ':')))
+	    while ((c = *p) != 0 && (isspace(c) != 0 || (c == ':') != 0))
 		p++;
 	}
     }

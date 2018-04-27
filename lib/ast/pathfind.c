@@ -49,7 +49,7 @@ int pathinclude(const char *dir)
     register Dir_t *dp;
 
     if (dir && *dir && !streq(dir, ".")) {
-	if (!(dp = oldof(0, Dir_t, 1, strlen(dir))))
+	if ((dp = oldof(0, Dir_t, 1, strlen(dir)))==0)
 	    return -1;
 	strcpy(dp->dir, dir);
 	if (state.tail)
@@ -97,7 +97,7 @@ char *pathfind(const char *name, const char *lib, const char *type,
 	    }
 	}
 	if (lib) {
-	    if ((s = strrchr((char *) lib, ':')))
+	    if ((s = strrchr((char *) lib, ':')) != 0)
 		lib = (const char *) s + 1;
 	    sfsprintf(tmp, sizeof(tmp), "lib/%s/%s", lib, name);
 	    if (pathpath(buf, tmp, "", PATH_REGULAR))

@@ -17,6 +17,8 @@
 
 static edgelistitem *mkItem(Dt_t * d, edgelistitem * obj, Dtdisc_t * disc)
 {
+	(void)d;
+	(void)disc;
     edgelistitem *ap = GNEW(edgelistitem);
 
     ap->edge = obj->edge;
@@ -25,12 +27,16 @@ static edgelistitem *mkItem(Dt_t * d, edgelistitem * obj, Dtdisc_t * disc)
 
 static void freeItem(Dt_t * d, edgelistitem * obj, Dtdisc_t * disc)
 {
+	(void)d;
+	(void)disc;
     free(obj);
 }
 
 static int
 cmpItem(Dt_t * d, Agedge_t ** key1, Agedge_t ** key2, Dtdisc_t * disc)
 {
+	(void)disc;
+	(void)d;
     if (*key1 > *key2)
 	return 1;
     else if (*key1 < *key2)

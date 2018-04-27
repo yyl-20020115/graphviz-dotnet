@@ -49,7 +49,7 @@ static void rec_apply(Agraph_t * g, Agobj_t * obj, agobjfn_t fn, void *arg,
     if (preorder)
 	fn(g, obj, arg);
     for (sub = agfstsubg(g); sub; sub = agnxtsubg(sub)) {
-	if ((subobj = objsearch(sub, obj)))
+	if ((subobj = objsearch(sub, obj)) != 0)
 	    rec_apply(sub, subobj, fn, arg, objsearch, preorder);
     }
     if (NOT(preorder))
@@ -80,7 +80,7 @@ int agapply(Agraph_t * g, Agobj_t * obj, agobjfn_t fn, void *arg,
 	return FAILURE;
 	break;
     }
-    if ((subobj = objsearch(g, obj))) {
+    if ((subobj = objsearch(g, obj))!=0) {
 	rec_apply(g, subobj, fn, arg, objsearch, preorder);
 	return SUCCESS;
     } else

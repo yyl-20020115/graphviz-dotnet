@@ -77,15 +77,15 @@ static Dtdisc_t qDisc = {
 #endif
 
 
-static void clear_viewport(ViewInfo * view)
+static void clear_viewport(ViewInfo * _view)
 {
     /*free topview if there is one */
-    if (view->activeGraph >= 0)
+    if (_view->activeGraph >= 0)
     {
-	freeSmGraph(view->g[view->activeGraph],view->Topview);
+	freeSmGraph(_view->g[_view->activeGraph], _view->Topview);
     }
-    if (view->graphCount)
-	agclose(view->g[view->activeGraph]);
+    if (_view->graphCount)
+	agclose(_view->g[_view->activeGraph]);
 //      init_viewport(view);
 }
 static void *get_glut_font(int ind)
@@ -141,9 +141,10 @@ static int compare_keys(md5_byte_t * b1, md5_byte_t * b2)
 }
 #endif
 
-int close_graph(ViewInfo * view, int graphid)
+int close_graph(ViewInfo * _view, int graphid)
 {
-    if (view->activeGraph < 0)
+	(void)graphid;
+    if (_view->activeGraph < 0)
 	return 1;
 #if TEST_FOR_CHANGE
     /* This test should only be done if the user has something significant, not just
@@ -172,175 +173,176 @@ int close_graph(ViewInfo * view, int graphid)
 	}
     }
 #endif
-    clear_viewport(view);
+    clear_viewport(_view);
     return 1;
 
 }
 
-char *get_attribute_value(char *attr, ViewInfo * view, Agraph_t * g)
+char *get_attribute_value(char *_attr, ViewInfo * _view, Agraph_t * g)
 {
     char *buf;
-    buf = agget(g, attr);
+    buf = agget(g, _attr);
     if ((!buf) || (*buf == '\0'))
-	buf = agget(view->systemGraphs.def_attrs, attr);
+	buf = agget(_view->systemGraphs.def_attrs, _attr);
     return buf;
 }
 
-void set_viewport_settings_from_template(ViewInfo * view, Agraph_t * g)
+void set_viewport_settings_from_template(ViewInfo * _view, Agraph_t * g)
 {
     gvcolor_t cl;
     char *buf;
-    colorxlate(get_attribute_value("bordercolor", view, g), &cl,
+    colorxlate(get_attribute_value("bordercolor", _view, g), &cl,
 	       RGBA_DOUBLE);
     /* glEnable(GL_POINT_SMOOTH); */
-    view->borderColor.R = (float) cl.u.RGBA[0];
-    view->borderColor.G = (float) cl.u.RGBA[1];
-    view->borderColor.B = (float) cl.u.RGBA[2];
+    _view->borderColor.R = (float) cl.u.RGBA[0];
+    _view->borderColor.G = (float) cl.u.RGBA[1];
+    _view->borderColor.B = (float) cl.u.RGBA[2];
 
-    view->borderColor.A =
-	(float) atof(get_attribute_value("bordercoloralpha", view, g));
+    _view->borderColor.A =
+	(float) atof(get_attribute_value("bordercoloralpha", _view, g));
 
-    view->bdVisible = atoi(get_attribute_value("bordervisible", view, g));
+    _view->bdVisible = atoi(get_attribute_value("bordervisible", _view, g));
 
-    buf = get_attribute_value("gridcolor", view, g);
+    buf = get_attribute_value("gridcolor", _view, g);
     colorxlate(buf, &cl, RGBA_DOUBLE);
-    view->gridColor.R = (float) cl.u.RGBA[0];
-    view->gridColor.G = (float) cl.u.RGBA[1];
-    view->gridColor.B = (float) cl.u.RGBA[2];
-    view->gridColor.A =
-	(float) atof(get_attribute_value("gridcoloralpha", view, g));
+    _view->gridColor.R = (float) cl.u.RGBA[0];
+    _view->gridColor.G = (float) cl.u.RGBA[1];
+    _view->gridColor.B = (float) cl.u.RGBA[2];
+    _view->gridColor.A =
+	(float) atof(get_attribute_value("gridcoloralpha", _view, g));
 
-    view->gridSize = (float) atof(buf =
-				  get_attribute_value("gridsize", view,
+    _view->gridSize = (float) atof(buf =
+				  get_attribute_value("gridsize", _view,
 						      g));
 
-    view->defaultnodeshape = atoi(buf =
+    _view->defaultnodeshape = atoi(buf =
 				  get_attribute_value("defaultnodeshape",
-						      view, g));
+						      _view, g));
     /* view->Selection.PickingType=atoi(buf=get_attribute_value("defaultselectionmethod", view,g)); */
 
 
 
-    view->gridVisible = atoi(get_attribute_value("gridvisible", view, g));
+    _view->gridVisible = atoi(get_attribute_value("gridvisible", _view, g));
 
     //mouse mode=pan
 
     //background color , default white
-    colorxlate(get_attribute_value("bgcolor", view, g), &cl, RGBA_DOUBLE);
+    colorxlate(get_attribute_value("bgcolor", _view, g), &cl, RGBA_DOUBLE);
 
-    view->bgColor.R = (float) cl.u.RGBA[0];
-    view->bgColor.G = (float) cl.u.RGBA[1];
-    view->bgColor.B = (float) cl.u.RGBA[2];
-    view->bgColor.A = (float) 1;
+    _view->bgColor.R = (float) cl.u.RGBA[0];
+    _view->bgColor.G = (float) cl.u.RGBA[1];
+    _view->bgColor.B = (float) cl.u.RGBA[2];
+    _view->bgColor.A = (float) 1;
 
     //selected nodes are drawn with this color
-    colorxlate(get_attribute_value("selectednodecolor", view, g), &cl,
+    colorxlate(get_attribute_value("selectednodecolor", _view, g), &cl,
 	       RGBA_DOUBLE);
-    view->selectedNodeColor.R = (float) cl.u.RGBA[0];
-    view->selectedNodeColor.G = (float) cl.u.RGBA[1];
-    view->selectedNodeColor.B = (float) cl.u.RGBA[2];
-    view->selectedNodeColor.A = (float)
-	atof(get_attribute_value("selectednodecoloralpha", view, g));
+    _view->selectedNodeColor.R = (float) cl.u.RGBA[0];
+    _view->selectedNodeColor.G = (float) cl.u.RGBA[1];
+    _view->selectedNodeColor.B = (float) cl.u.RGBA[2];
+    _view->selectedNodeColor.A = (float)
+	atof(get_attribute_value("selectednodecoloralpha", _view, g));
     //selected edge are drawn with this color
-    colorxlate(get_attribute_value("selectededgecolor", view, g), &cl,
+    colorxlate(get_attribute_value("selectededgecolor", _view, g), &cl,
 	       RGBA_DOUBLE);
-    view->selectedEdgeColor.R = (float) cl.u.RGBA[0];
-    view->selectedEdgeColor.G = (float) cl.u.RGBA[1];
-    view->selectedEdgeColor.B = (float) cl.u.RGBA[2];
-    view->selectedEdgeColor.A = (float)
-	atof(get_attribute_value("selectededgecoloralpha", view, g));
+    _view->selectedEdgeColor.R = (float) cl.u.RGBA[0];
+    _view->selectedEdgeColor.G = (float) cl.u.RGBA[1];
+    _view->selectedEdgeColor.B = (float) cl.u.RGBA[2];
+    _view->selectedEdgeColor.A = (float)
+	atof(get_attribute_value("selectededgecoloralpha", _view, g));
 
-    colorxlate(get_attribute_value("highlightednodecolor", view, g), &cl,
+    colorxlate(get_attribute_value("highlightednodecolor", _view, g), &cl,
 	       RGBA_DOUBLE);
-    view->highlightedNodeColor.R = (float) cl.u.RGBA[0];
-    view->highlightedNodeColor.G = (float) cl.u.RGBA[1];
-    view->highlightedNodeColor.B = (float) cl.u.RGBA[2];
-    view->highlightedNodeColor.A = (float)
-	atof(get_attribute_value("highlightednodecoloralpha", view, g));
+    _view->highlightedNodeColor.R = (float) cl.u.RGBA[0];
+    _view->highlightedNodeColor.G = (float) cl.u.RGBA[1];
+    _view->highlightedNodeColor.B = (float) cl.u.RGBA[2];
+    _view->highlightedNodeColor.A = (float)
+	atof(get_attribute_value("highlightednodecoloralpha", _view, g));
 
     buf = agget(g, "highlightededgecolor");
-    colorxlate(get_attribute_value("highlightededgecolor", view, g), &cl,
+    colorxlate(get_attribute_value("highlightededgecolor", _view, g), &cl,
 	       RGBA_DOUBLE);
-    view->highlightedEdgeColor.R = (float) cl.u.RGBA[0];
-    view->highlightedEdgeColor.G = (float) cl.u.RGBA[1];
-    view->highlightedEdgeColor.B = (float) cl.u.RGBA[2];
-    view->highlightedEdgeColor.A = (float)
-	atof(get_attribute_value("highlightededgecoloralpha", view, g));
-    view->defaultnodealpha = (float)
-	atof(get_attribute_value("defaultnodealpha", view, g));
+    _view->highlightedEdgeColor.R = (float) cl.u.RGBA[0];
+    _view->highlightedEdgeColor.G = (float) cl.u.RGBA[1];
+    _view->highlightedEdgeColor.B = (float) cl.u.RGBA[2];
+    _view->highlightedEdgeColor.A = (float)
+	atof(get_attribute_value("highlightededgecoloralpha", _view, g));
+    _view->defaultnodealpha = (float)
+	atof(get_attribute_value("defaultnodealpha", _view, g));
 
-    view->defaultedgealpha = (float)
-	atof(get_attribute_value("defaultedgealpha", view, g));
+    _view->defaultedgealpha = (float)
+	atof(get_attribute_value("defaultedgealpha", _view, g));
 
 
 
     /*default line width */
-    view->LineWidth =
-	(float) atof(get_attribute_value("defaultlinewidth", view, g));
-    view->FontSize =
-	(float) atof(get_attribute_value("defaultfontsize", view, g));
+    _view->LineWidth =
+	(float) atof(get_attribute_value("defaultlinewidth", _view, g));
+    _view->FontSize =
+	(float) atof(get_attribute_value("defaultfontsize", _view, g));
 
-    view->topviewusermode = atoi(get_attribute_value("usermode", view, g));
-    get_attribute_value("defaultmagnifierwidth", view, g);
-    view->mg.width =
-	atoi(get_attribute_value("defaultmagnifierwidth", view, g));
-    view->mg.height =
-	atoi(get_attribute_value("defaultmagnifierheight", view, g));
+    _view->topviewusermode = atoi(get_attribute_value("usermode", _view, g));
+    get_attribute_value("defaultmagnifierwidth", _view, g);
+    _view->mg.width =
+	atoi(get_attribute_value("defaultmagnifierwidth", _view, g));
+    _view->mg.height =
+	atoi(get_attribute_value("defaultmagnifierheight", _view, g));
 
-    view->mg.kts =
-	(float) atof(get_attribute_value("defaultmagnifierkts", view, g));
+    _view->mg.kts =
+	(float) atof(get_attribute_value("defaultmagnifierkts", _view, g));
 
-    view->fmg.constantR =
+    _view->fmg.constantR =
 	atoi(get_attribute_value
-	     ("defaultfisheyemagnifierradius", view, g));
+	     ("defaultfisheyemagnifierradius", _view, g));
 
-    view->fmg.fisheye_distortion_fac =
+    _view->fmg.fisheye_distortion_fac =
 	atoi(get_attribute_value
-	     ("defaultfisheyemagnifierdistort", view, g));
-    view->drawnodes = atoi(get_attribute_value("drawnodes", view, g));
-    view->drawedges = atoi(get_attribute_value("drawedges", view, g));
-    view->drawnodelabels=atoi(get_attribute_value("labelshownodes", view, g));
-    view->drawedgelabels=atoi(get_attribute_value("labelshowedges", view, g));
-    view->nodeScale=atof(get_attribute_value("nodesize", view, g))*.30;
+	     ("defaultfisheyemagnifierdistort", _view, g));
+    _view->drawnodes = atoi(get_attribute_value("drawnodes", _view, g));
+    _view->drawedges = atoi(get_attribute_value("drawedges", _view, g));
+    _view->drawnodelabels=atoi(get_attribute_value("labelshownodes", _view, g));
+    _view->drawedgelabels=atoi(get_attribute_value("labelshowedges", _view, g));
+    _view->nodeScale=(float)(atof(get_attribute_value("nodesize", _view, g))*.30);
 
-    view->FontSizeConst = 0;	//this will be calculated later in topview.c while calculating optimum font size
+    _view->FontSizeConst = 0;	//this will be calculated later in topview.c while calculating optimum font size
 
-    view->glutfont =
-	get_glut_font(atoi(get_attribute_value("labelglutfont", view, g)));
-    colorxlate(get_attribute_value("nodelabelcolor", view, g), &cl,
+    _view->glutfont =
+	get_glut_font(atoi(get_attribute_value("labelglutfont", _view, g)));
+    colorxlate(get_attribute_value("nodelabelcolor", _view, g), &cl,
 	       RGBA_DOUBLE);
-    view->nodelabelcolor.R = (float) cl.u.RGBA[0];
-    view->nodelabelcolor.G = (float) cl.u.RGBA[1];
-    view->nodelabelcolor.B = (float) cl.u.RGBA[2];
-    view->nodelabelcolor.A =
-	(float) atof(get_attribute_value("defaultnodealpha", view, g));
-    colorxlate(get_attribute_value("edgelabelcolor", view, g), &cl,
+    _view->nodelabelcolor.R = (float) cl.u.RGBA[0];
+    _view->nodelabelcolor.G = (float) cl.u.RGBA[1];
+    _view->nodelabelcolor.B = (float) cl.u.RGBA[2];
+    _view->nodelabelcolor.A =
+	(float) atof(get_attribute_value("defaultnodealpha", _view, g));
+    colorxlate(get_attribute_value("edgelabelcolor", _view, g), &cl,
 	       RGBA_DOUBLE);
-    view->edgelabelcolor.R = (float) cl.u.RGBA[0];
-    view->edgelabelcolor.G = (float) cl.u.RGBA[1];
-    view->edgelabelcolor.B = (float) cl.u.RGBA[2];
-    view->edgelabelcolor.A =
-	(float) atof(get_attribute_value("defaultedgealpha", view, g));
-    view->labelwithdegree =
-	atoi(get_attribute_value("labelwithdegree", view, g));
-    view->labelnumberofnodes =
-	atof(get_attribute_value("labelnumberofnodes", view, g));
-    view->labelshownodes =
-	atoi(get_attribute_value("labelshownodes", view, g));
-    view->labelshowedges =
-	atoi(get_attribute_value("labelshowedges", view, g));
-    view->colschms =
+    _view->edgelabelcolor.R = (float) cl.u.RGBA[0];
+    _view->edgelabelcolor.G = (float) cl.u.RGBA[1];
+    _view->edgelabelcolor.B = (float) cl.u.RGBA[2];
+    _view->edgelabelcolor.A =
+	(float) atof(get_attribute_value("defaultedgealpha", _view, g));
+    _view->labelwithdegree =
+	atoi(get_attribute_value("labelwithdegree", _view, g));
+    _view->labelnumberofnodes =(int)
+	atof(get_attribute_value("labelnumberofnodes", _view, g));
+    _view->labelshownodes =
+	atoi(get_attribute_value("labelshownodes", _view, g));
+    _view->labelshowedges =
+	atoi(get_attribute_value("labelshowedges", _view, g));
+    _view->colschms =
 	create_color_theme(atoi
-			   (get_attribute_value("colortheme", view, g)));
-    view->edgerendertype=atoi(get_attribute_value("edgerender", view, g));
+			   (get_attribute_value("colortheme", _view, g)));
+    _view->edgerendertype=atoi(get_attribute_value("edgerender", _view, g));
 
 
-    if (view->graphCount > 0)
-	glClearColor(view->bgColor.R, view->bgColor.G, view->bgColor.B, view->bgColor.A);	//background color
+    if (_view->graphCount > 0)
+	glClearColor(_view->bgColor.R, _view->bgColor.G, _view->bgColor.B, _view->bgColor.A);	//background color
 }
 
 static gboolean gl_main_expose(gpointer data)
 {
+	(void)data;
     if (view->activeGraph >= 0) {
 	if (view->Topview->fisheyeParams.animate == 1)
 	    expose_event(view->drawing_area, NULL, NULL);
@@ -362,26 +364,26 @@ static void get_data_dir(void)
     view->attr_file = strdup(smyrnaPath("attrs.txt"));
 }
 
-void init_viewport(ViewInfo * view)
+void init_viewport(ViewInfo * _view)
 {
     FILE *input_file = NULL;
     FILE *input_file2 = NULL;
     static char* path;
     get_data_dir();
-    input_file = fopen(view->template_file, "rb");
+    input_file = fopen(_view->template_file, "rb");
     if (!input_file) {
 	fprintf(stderr,
 		"default attributes template graph file \"%s\" not found\n",
-		view->template_file);
+		_view->template_file);
 	exit(-1);
     } 
-    view->systemGraphs.def_attrs = agread(input_file, 0);
+    _view->systemGraphs.def_attrs = agread(input_file, 0);
     fclose (input_file);
 
-    if (!view->systemGraphs.def_attrs) {
+    if (!_view->systemGraphs.def_attrs) {
 	fprintf(stderr,
 		"could not load default attributes template graph file \"%s\"\n",
-		view->template_file);
+		_view->template_file);
 	exit(-1);
     }
     if (!path)
@@ -393,139 +395,139 @@ void init_viewport(ViewInfo * view)
 	exit(-1);
 
     }
-    view->systemGraphs.attrs_widgets = agread(input_file2, 0);
+    _view->systemGraphs.attrs_widgets = agread(input_file2, 0);
     fclose (input_file2);
-    if (!(view->systemGraphs.attrs_widgets )) {
+    if (!(_view->systemGraphs.attrs_widgets )) {
 	fprintf(stderr,"could not load default attribute widgets graph file \"%s\"\n",smyrnaPath("attr_widgets.dot"));
 	exit(-1);
     }
     //init graphs
-    view->g = NULL;		//no graph, gl screen should check it
-    view->graphCount = 0;	//and disable interactivity if count is zero
+    _view->g = NULL;		//no graph, gl screen should check it
+    _view->graphCount = 0;	//and disable interactivity if count is zero
 
-    view->bdxLeft = 0;
-    view->bdxRight = 500;
-    view->bdyBottom = 0;
-    view->bdyTop = 500;
-    view->bdzBottom = 0;
-    view->bdzTop = 0;
+    _view->bdxLeft = 0;
+    _view->bdxRight = 500;
+    _view->bdyBottom = 0;
+    _view->bdyTop = 500;
+    _view->bdzBottom = 0;
+    _view->bdzTop = 0;
 
-    view->borderColor.R = 1;
-    view->borderColor.G = 0;
-    view->borderColor.B = 0;
-    view->borderColor.A = 1;
+    _view->borderColor.R = 1;
+    _view->borderColor.G = 0;
+    _view->borderColor.B = 0;
+    _view->borderColor.A = 1;
 
-    view->bdVisible = 1;	//show borders red
+    _view->bdVisible = 1;	//show borders red
 
-    view->gridSize = 10;
-    view->gridColor.R = 0.5;
-    view->gridColor.G = 0.5;
-    view->gridColor.B = 0.5;
-    view->gridColor.A = 1;
-    view->gridVisible = 0;	//show grids in light gray
+    _view->gridSize = 10;
+    _view->gridColor.R = 0.5;
+    _view->gridColor.G = 0.5;
+    _view->gridColor.B = 0.5;
+    _view->gridColor.A = 1;
+    _view->gridVisible = 0;	//show grids in light gray
 
     //mouse mode=pan
     //pen color
-    view->penColor.R = 0;
-    view->penColor.G = 0;
-    view->penColor.B = 0;
-    view->penColor.A = 1;
+    _view->penColor.R = 0;
+    _view->penColor.G = 0;
+    _view->penColor.B = 0;
+    _view->penColor.A = 1;
 
-    view->fillColor.R = 1;
-    view->fillColor.G = 0;
-    view->fillColor.B = 0;
-    view->fillColor.A = 1;
+    _view->fillColor.R = 1;
+    _view->fillColor.G = 0;
+    _view->fillColor.B = 0;
+    _view->fillColor.A = 1;
     //background color , default white
-    view->bgColor.R = 1;
-    view->bgColor.G = 1;
-    view->bgColor.B = 1;
-    view->bgColor.A = 1;
+    _view->bgColor.R = 1;
+    _view->bgColor.G = 1;
+    _view->bgColor.B = 1;
+    _view->bgColor.A = 1;
 
     //selected objets are drawn with this color
-    view->selectedNodeColor.R = 1;
-    view->selectedNodeColor.G = 0;
-    view->selectedNodeColor.B = 0;
-    view->selectedNodeColor.A = 1;
+    _view->selectedNodeColor.R = 1;
+    _view->selectedNodeColor.G = 0;
+    _view->selectedNodeColor.B = 0;
+    _view->selectedNodeColor.A = 1;
 
     //default line width;
-    view->LineWidth = 1;
+    _view->LineWidth = 1;
 
     //default view settings , camera is not active
-    view->GLDepth = 1;		//should be set before GetFixedOGLPos(int x, int y,float kts) funtion is used!!!!
-    view->panx = 0;
-    view->pany = 0;
-    view->panz = 0;
+    _view->GLDepth = 1;		//should be set before GetFixedOGLPos(int x, int y,float kts) funtion is used!!!!
+    _view->panx = 0;
+    _view->pany = 0;
+    _view->panz = 0;
 
 
-    view->zoom = -20;
-    view->texture = 1;
-    view->FontSize = 52;
+    _view->zoom = -20;
+    _view->texture = 1;
+    _view->FontSize = 52;
 
-    view->topviewusermode = TOP_VIEW_USER_NOVICE_MODE;	//for demo
-    view->mg.active = 0;
-    view->mg.x = 0;
-    view->mg.y = 0;
-    view->mg.width = DEFAULT_MAGNIFIER_WIDTH;
-    view->mg.height = DEFAULT_MAGNIFIER_HEIGHT;
-    view->mg.kts = DEFAULT_MAGNIFIER_KTS;
-    view->fmg.constantR = DEFAULT_FISHEYE_MAGNIFIER_RADIUS;
-    view->fmg.active = 0;
-    view->mouse.down = 0;
-    view->activeGraph = -1;
-    view->SignalBlock = 0;
-    view->Topview = GNEW(topview);
-    view->Topview->fisheyeParams.fs = 0;
-    view->Topview->xDot=NULL;
+    _view->topviewusermode = TOP_VIEW_USER_NOVICE_MODE;	//for demo
+    _view->mg.active = 0;
+    _view->mg.x = 0;
+    _view->mg.y = 0;
+    _view->mg.width = DEFAULT_MAGNIFIER_WIDTH;
+    _view->mg.height = DEFAULT_MAGNIFIER_HEIGHT;
+    _view->mg.kts = DEFAULT_MAGNIFIER_KTS;
+    _view->fmg.constantR = DEFAULT_FISHEYE_MAGNIFIER_RADIUS;
+    _view->fmg.active = 0;
+    _view->mouse.down = 0;
+    _view->activeGraph = -1;
+    _view->SignalBlock = 0;
+    _view->Topview = GNEW(topview);
+    _view->Topview->fisheyeParams.fs = 0;
+    _view->Topview->xDot=NULL;
 
     /* init topfish parameters */
-    view->Topview->fisheyeParams.level.num_fine_nodes = 10;
-    view->Topview->fisheyeParams.level.coarsening_rate = 2.5;
-    view->Topview->fisheyeParams.hier.dist2_limit = 1;
-    view->Topview->fisheyeParams.hier.min_nvtxs = 20;
-    view->Topview->fisheyeParams.repos.rescale = Polar;
-    view->Topview->fisheyeParams.repos.width =
-	(int) (view->bdxRight - view->bdxLeft);
-    view->Topview->fisheyeParams.repos.height =
-	(int) (view->bdyTop - view->bdyBottom);
-    view->Topview->fisheyeParams.repos.margin = 0;
-    view->Topview->fisheyeParams.repos.graphSize = 100;
-    view->Topview->fisheyeParams.repos.distortion = 1.0;
+    _view->Topview->fisheyeParams.level.num_fine_nodes = 10;
+    _view->Topview->fisheyeParams.level.coarsening_rate = 2.5;
+    _view->Topview->fisheyeParams.hier.dist2_limit = 1;
+    _view->Topview->fisheyeParams.hier.min_nvtxs = 20;
+    _view->Topview->fisheyeParams.repos.rescale = Polar;
+    _view->Topview->fisheyeParams.repos.width =
+	(int) (_view->bdxRight - _view->bdxLeft);
+    _view->Topview->fisheyeParams.repos.height =
+	(int) (_view->bdyTop - _view->bdyBottom);
+    _view->Topview->fisheyeParams.repos.margin = 0;
+    _view->Topview->fisheyeParams.repos.graphSize = 100;
+    _view->Topview->fisheyeParams.repos.distortion = 1.0;
     /*create timer */
-    view->timer = g_timer_new();
-    view->timer2 = g_timer_new();
-    view->timer3 = g_timer_new();
+    _view->timer = g_timer_new();
+    _view->timer2 = g_timer_new();
+    _view->timer3 = g_timer_new();
 
-    g_timer_stop(view->timer);
-    view->active_frame = 0;
-    view->total_frames = 1500;
-    view->frame_length = 1;
+    g_timer_stop(_view->timer);
+    _view->active_frame = 0;
+    _view->total_frames = 1500;
+    _view->frame_length = 1;
     /*add a call back to the main() */
     g_timeout_add_full((gint) G_PRIORITY_DEFAULT, (guint) 100,
 		       gl_main_expose, NULL, NULL);
-    view->cameras = '\0';;
-    view->camera_count = 0;
-    view->active_camera = -1;
-    set_viewport_settings_from_template(view, view->systemGraphs.def_attrs);
-    view->dfltViewType = VT_NONE;
-    view->dfltEngine = GVK_NONE;
-    view->Topview->Graphdata.GraphFileName = (char *) 0;
-    view->Topview->Graphdata.Modified = 0;
-    view->colschms = NULL;
-    view->flush = 1;
-    view->arcball = NEW(ArcBall_t);
-    view->keymap.down=0;
-    load_mouse_actions (NULL,view);
-    view->refresh.color=1;
-    view->refresh.pos=1;
-    view->refresh.selection=1;
-    view->refresh.visibility=1;
-    view->refresh.nodesize=1;
-    view->edgerendertype=0;
-    if(view->guiMode!=GUI_FULLSCREEN)
-	view->guiMode=GUI_WINDOWED;
+    _view->cameras = '\0';;
+    _view->camera_count = 0;
+    _view->active_camera = -1;
+    set_viewport_settings_from_template(_view, _view->systemGraphs.def_attrs);
+    _view->dfltViewType = VT_NONE;
+    _view->dfltEngine = GVK_NONE;
+    _view->Topview->Graphdata.GraphFileName = (char *) 0;
+    _view->Topview->Graphdata.Modified = 0;
+    _view->colschms = NULL;
+    _view->flush = 1;
+    _view->arcball = NEW(ArcBall_t);
+    _view->keymap.down=0;
+    load_mouse_actions (NULL,_view);
+    _view->refresh.color=1;
+    _view->refresh.pos=1;
+    _view->refresh.selection=1;
+    _view->refresh.visibility=1;
+    _view->refresh.nodesize=1;
+    _view->edgerendertype=0;
+    if(_view->guiMode!=GUI_FULLSCREEN)
+	_view->guiMode=GUI_WINDOWED;
 
     /*create glcomp menu system */
-    view->widgets = glcreate_gl_topview_menu();
+    _view->widgets = glcreate_gl_topview_menu();
 
 }
 
@@ -690,6 +692,7 @@ graphRecord (Agraph_t* g)
 
 void refreshViewport(int doClear)
 {
+	(void)doClear;
     Agraph_t *graph = view->g[view->activeGraph];
     view->refresh.color=1;
     view->refresh.nodesize=1;
@@ -763,12 +766,14 @@ static md5_state_t pms;
 
 static int append_to_md5(void *chan, const char *str)
 {
+	(void)chan;
     md5_append(&pms, (unsigned char *) str, (int) strlen(str));
     return 1;
 
 }
 static int flush_md5(void *chan)
 {
+	(void)chan;
     md5_finish(&pms, md5_digest);
     return 1;
 }
@@ -1046,9 +1051,9 @@ int setGdkColor(GdkColor * c, char *color)
     gvcolor_t cl;
     if (color != '\0') {
 	colorxlate(color, &cl, RGBA_DOUBLE);
-	c->red = (int) (cl.u.RGBA[0] * 65535.0);
-	c->green = (int) (cl.u.RGBA[1] * 65535.0);
-	c->blue = (int) (cl.u.RGBA[2] * 65535.0);
+	c->red = (guint16) (cl.u.RGBA[0] * 65535.0);
+	c->green = (guint16) (cl.u.RGBA[1] * 65535.0);
+	c->blue = (guint16) (cl.u.RGBA[2] * 65535.0);
 	return 1;
     } else
 	return 0;
@@ -1131,13 +1136,13 @@ static void set_color_theme_color(colorschemaset * sc, char **colorstr, int smoo
 
     sc->smooth = smooth;
     if (smooth) {
-	av_perc = 1.0 / (float) (colorcnt-1);
+	av_perc = 1.0f / (float) (colorcnt-1);
 	for (ind = 0; ind < colorcnt; ind++) {
 	    colorxlate(colorstr[ind], &cl, RGBA_DOUBLE);
-	    sc->s[ind].c.R = cl.u.RGBA[0];
-	    sc->s[ind].c.G = cl.u.RGBA[1];
-	    sc->s[ind].c.B = cl.u.RGBA[2];
-	    sc->s[ind].c.A = cl.u.RGBA[3];
+	    sc->s[ind].c.R = (GLfloat)cl.u.RGBA[0];
+	    sc->s[ind].c.G = (GLfloat)cl.u.RGBA[1];
+	    sc->s[ind].c.B = (GLfloat)cl.u.RGBA[2];
+	    sc->s[ind].c.A = (GLfloat)cl.u.RGBA[3];
 	    sc->s[ind].perc = ind * av_perc;
 	}
     }

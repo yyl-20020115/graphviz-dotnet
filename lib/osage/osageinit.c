@@ -91,7 +91,7 @@ layout (Agraph_t* g, int depth)
     boxf* gs;
     point* pts;
     boxf bb, rootbb;
-    pointf p;
+	pointf p = { 0 };
     pack_info pinfo;
     pack_mode pmode;
     double margin;
@@ -199,18 +199,18 @@ layout (Agraph_t* g, int depth)
     }
 
     if (GD_label(g)) {
-        pointf p;
+		pointf _p = { 0 };
         double d;
 
-        p = GD_label(g)->dimen;
+        _p = GD_label(g)->dimen;
 	if (total == 0) {
             rootbb.LL.x = 0;
             rootbb.LL.y = 0;
-            rootbb.UR.x = p.x;
-            rootbb.UR.y = p.y;
+            rootbb.UR.x = _p.x;
+            rootbb.UR.y = _p.y;
 
 	}
-        d = p.x - (rootbb.UR.x - rootbb.LL.x);
+        d = _p.x - (rootbb.UR.x - rootbb.LL.x);
         if (d > 0) {            /* height of label is added below */
             d /= 2;
             rootbb.LL.x -= d;
@@ -322,9 +322,9 @@ reposition (Agraph_t* g, int depth)
 static void
 mkClusters (Agraph_t* g, clist_t* pclist, Agraph_t* parent)
 {
-    graph_t* subg;
-    clist_t  list;
-    clist_t* clist;
+    graph_t* subg=0;
+    clist_t  list= { 0 };
+    clist_t* clist=0;
 
     if (pclist == NULL) {
         clist = &list;

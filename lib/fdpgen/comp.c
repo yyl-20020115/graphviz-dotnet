@@ -74,7 +74,7 @@ graph_t **findCComp(graph_t * g, int *cnt, int *pinned)
 
     /* Create component based on port nodes */
     subg = 0;
-    if ((pp = PORTS(g))) {
+    if ((pp = PORTS(g)) != 0) {
 	sprintf(name, "cc%s_%d", agnameof(g), c_cnt++ + C_cnt);
 	subg = agsubg(g, name,1);
 	agbindrec(subg, "Agraphinfo_t", sizeof(Agraphinfo_t), TRUE);

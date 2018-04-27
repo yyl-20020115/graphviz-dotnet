@@ -86,7 +86,7 @@ void twopi_layout(Agraph_t * g)
     if (agnnodes(g) == 0) return;
 
     twopi_init_graph(g);
-    if ((s = agget(g, "root"))) {
+    if ((s = agget(g, "root")) != 0) {
 	if (*s) {
 	    ctr = agfindnode(g, s);
 	    if (!ctr) {

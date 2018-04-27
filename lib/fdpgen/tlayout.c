@@ -120,6 +120,7 @@ static parms_t parms;
 
 static double cool(double temp, int t)
 {
+	(void)temp;
     return (T_T0 * (T_maxIters - t)) / T_maxIters;
 }
 
@@ -538,7 +539,7 @@ static pointf initPositions(graph_t * g, bport_t * pp)
 	local_seed = T_seed;
     else {
 #if defined(_WIN32)
-	local_seed = time(NULL);
+	local_seed = (long)time(NULL);
 #else
 	local_seed = getpid() ^ time(NULL);
 #endif

@@ -75,6 +75,7 @@ static double RAD(Agnode_t * n)
  */
 static void xinit_params(graph_t* g, int n, xparams * xpms)
 {
+	(void)g;
     xParams.K = xpms->K;
     xParams.numIters = xpms->numIters;
     xParams.T0 = xpms->T0;
@@ -294,7 +295,7 @@ doRep(node_t * p, node_t * q, double xdelta, double ydelta, double dist2)
     if ((ov = overlap(p, q)))
 	force *= X_C;
 #else
-    if ((ov = overlap(p, q)))
+    if ((ov = overlap(p, q)) != 0)
 	force = X_ov / dist2;
     else
 	force = X_nonov / dist2;
@@ -465,8 +466,8 @@ static int x_layout(graph_t * g, xparams * pxpms, int tries)
 
     X_marg = sepFactor (g);
     if (X_marg.doAdd) {
-	X_marg.x = PS2INCH(X_marg.x); /* sepFactor is in points */
-	X_marg.y = PS2INCH(X_marg.y);
+	X_marg.x =(float)PS2INCH(X_marg.x); /* sepFactor is in points */
+	X_marg.y =(float)PS2INCH(X_marg.y);
     }
     ov = cntOverlaps(g);
     if (ov == 0)
@@ -539,7 +540,7 @@ void fdp_xLayout(graph_t * g, xparams * xpms)
 	ovlp = DFLT_overlap;
     }
     /* look for optional ":" or "number:" */
-    if ((cp = strchr(ovlp, ':')) && ((cp == ovlp) || isdigit(*ovlp))) {
+    if ((cp = strchr(ovlp, ':')) != 0 && ((cp == ovlp) || isdigit(*ovlp))) {
       cp++;
       rest = cp;
       tries = atoi (ovlp);

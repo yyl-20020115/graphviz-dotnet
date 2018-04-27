@@ -96,7 +96,8 @@ void stress_model(int dim, SparseMatrix A, SparseMatrix D, real **x, int edge_le
 }
 #else
 void stress_model(int dim, SparseMatrix A, SparseMatrix D, real **x, int edge_len_weighted, int maxit_sm, real tol, int *flag){
-  stress_model_core(dim, D, x, edge_len_weighted, maxit_sm, tol, flag);
+	(void)A;
+	stress_model_core(dim, D, x, edge_len_weighted, maxit_sm, tol, flag);
 }
 #endif
 

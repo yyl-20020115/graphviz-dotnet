@@ -35,7 +35,7 @@ void IntStack_delete(IntStack s){
 static IntStack IntStack_realloc(IntStack s){
   int max_len = s->max_len;
 
-  max_len = max_len + MAX(10,0.2*max_len);
+  max_len = (int)(max_len + MAX(10,0.2*max_len));
   s->max_len = max_len;
   s->stack = REALLOC(s->stack, sizeof(int)*max_len);
   if (!s->stack) return NULL;

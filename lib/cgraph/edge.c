@@ -222,7 +222,7 @@ static Agedge_t *newedge(Agraph_t * g, Agnode_t * t, Agnode_t * h,
     e2 = (Agedgepair_t *) agalloc(g, sizeof(Agedgepair_t));
     in = &(e2->in);
     out = &(e2->out);
-    seq = agnextseq(g, AGEDGE);
+    seq = (int)agnextseq(g, AGEDGE);
     AGTYPE(in) = AGINEDGE;
     AGTYPE(out) = AGOUTEDGE;
     AGID(in) = AGID(out) = id;
@@ -267,7 +267,7 @@ Agedge_t *agidedge(Agraph_t * g, Agnode_t * t, Agnode_t * h,
 	e = agfindedge_by_id(g, h, t, id);
     if ((e == NILedge) && cflag && ok_to_make_edge(g, t, h)) {
 	root = agroot(g);
-	if ((g != root) && ((e = agfindedge_by_id(root, t, h, id)))) {
+	if ((g != root) != 0 && ((e = agfindedge_by_id(root, t, h, id))) != 0) {
 	    subedge(g, e);	/* old */
 	} else {
 	    if (agallocid(g, AGEDGE, id)) {

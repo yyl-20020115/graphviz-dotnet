@@ -78,7 +78,7 @@ Agraph_t *agopen1(Agraph_t * g)
 
     par = agparent(g);
     if (par) {
-	AGSEQ(g) = agnextseq(par, AGRAPH);
+	AGSEQ(g) = (unsigned int)agnextseq(par, AGRAPH);
 	dtinsert(par->g_dict, g);
     }				/* else AGSEQ=0 */
     if (!par || par->desc.has_attrs)
@@ -243,17 +243,21 @@ int agraphidcmpf(Dict_t * d, void *arg0, void *arg1, Dtdisc_t * disc)
 {
     ptrdiff_t	v;
     Agraph_t *sg0, *sg1;
-    sg0 = (Agraph_t *) arg0;
+	(void)disc;
+	(void)d;
+	sg0 = (Agraph_t *) arg0;
     sg1 = (Agraph_t *) arg1;
-    v = (AGID(sg0) - AGID(sg1));
+    v = (ptrdiff_t)(AGID(sg0) - AGID(sg1));
     return ((v==0)?0:(v<0?-1:1));
 }
 
 int agraphseqcmpf(Dict_t * d, void *arg0, void *arg1, Dtdisc_t * disc)
 {
     long	v;
-    Agraph_t *sg0, *sg1;
-    sg0 = (Agraph_t *) arg0;
+	Agraph_t *sg0, *sg1;
+	(void)disc;
+	(void)d;
+	sg0 = (Agraph_t *) arg0;
     sg1 = (Agraph_t *) arg1;
     v = (AGSEQ(sg0) - AGSEQ(sg1));
     return ((v==0)?0:(v<0?-1:1));

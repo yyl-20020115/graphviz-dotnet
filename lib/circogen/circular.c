@@ -58,6 +58,7 @@ static void initGraphAttrs(Agraph_t * g, circ_state * state)
  */
 static void cleanup(block_t * root, circ_state * sp)
 {
+	(void)sp;
     freeBlocktree(root);
 }
 

@@ -52,7 +52,7 @@ Agrec_t *aggetrec(void *obj, char *name, int mtf)
 	    if (mtf && (hdr->data != d))
 		agerr(AGERR, "move to front lock inconsistency");
 	} else {
-	    if ((d != first) || (mtf != hdr->tag.mtflock))
+	    if ((d != first) || (mtf != (int)hdr->tag.mtflock))
 		set_data(hdr, d, mtf);	/* Always optimize */
 	}
     }
@@ -62,6 +62,7 @@ Agrec_t *aggetrec(void *obj, char *name, int mtf)
 /* insert the record in data list of this object (only) */
 static void objputrec(Agraph_t * g, Agobj_t * obj, void *arg)
 {
+	(void)g;
     Agrec_t *firstrec, *newrec;
 
     newrec = arg;
@@ -119,7 +120,8 @@ void *agbindrec(void *arg_obj, char *recname, unsigned int recsize,
 static void objdelrec(Agraph_t * g, Agobj_t * obj, void *arg_rec)
 {
     Agrec_t *rec = (Agrec_t *) arg_rec, *newrec;
-    if (obj->data == rec) {
+	(void)g;
+	if (obj->data == rec) {
 	if (rec->next == rec)
 	    newrec = NIL(Agrec_t *);
 	else
@@ -172,7 +174,8 @@ int agdelrec(void *arg_obj, char *name)
 
 static void simple_delrec(Agraph_t * g, Agobj_t * obj, void *rec_name)
 {
-    agdelrec(obj, rec_name);
+	(void)g;
+	agdelrec(obj, rec_name);
 }
 
 #ifdef OLD
@@ -266,7 +269,7 @@ void agrecclose(Agobj_t * obj)
     Agrec_t *rec, *nrec;
 
     g = agraphof(obj);
-    if ((rec = obj->data)) {
+    if ((rec = obj->data) != 0) {
 	do {
 	    nrec = rec->next;
 	    agstrfree(g, rec->name);

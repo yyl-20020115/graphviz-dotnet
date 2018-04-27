@@ -178,20 +178,20 @@ Multilevel_MQ_Clustering Multilevel_MQ_Clustering_init(SparseMatrix A, int level
 
   if (level == 0){
     real mq = 0, mq_in, mq_out;
-    int n = A->n, ncluster;
+    int _n = A->n, ncluster;
     real *deg_intra, *wgt, *dout;
 
-    grid->deg_intra = MALLOC(sizeof(real)*(n));
+    grid->deg_intra = MALLOC(sizeof(real)*(_n));
     deg_intra = grid->deg_intra;
 
-    grid->wgt = MALLOC(sizeof(real)*n);
+    grid->wgt = MALLOC(sizeof(real)*_n);
     wgt = grid->wgt;
 
-    for (i = 0; i < n; i++){
+    for (i = 0; i < _n; i++){
       deg_intra[i] = 0;
       wgt[i] = 1.;
     }
-    for (i = 0; i < n; i++) matching[i] = i;
+    for (i = 0; i < _n; i++) matching[i] = i;
     mq = get_mq(A, matching, &ncluster, &mq_in, &mq_out, &dout);
     fprintf(stderr,"ncluster = %d, mq = %f\n", ncluster, mq);
     grid->mq = mq;

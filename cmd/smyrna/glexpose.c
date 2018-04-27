@@ -204,36 +204,36 @@ static void drawRotatingAxis(void)
 	params:ViewInfo	, global view variable defined in viewport.c
 	return value:always 1
 */
-static int glupdatecamera(ViewInfo * view)
+static int glupdatecamera(ViewInfo * _view)
 {
-    if (view->active_camera == -1)
-	glTranslatef(-view->panx, -view->pany, view->panz);
+    if (_view->active_camera == -1)
+	glTranslatef(-_view->panx, -_view->pany, _view->panz);
 
 
     /*toggle to active camera */
     else {
-	glMultMatrixf(view->arcball->Transform.M);	/*arcball transformations , experimental */
-	glTranslatef(-view->cameras[view->active_camera]->targetx,
-		     -view->cameras[view->active_camera]->targety, 0);
+	glMultMatrixf(_view->arcball->Transform.M);	/*arcball transformations , experimental */
+	glTranslatef(-_view->cameras[_view->active_camera]->targetx,
+		     -_view->cameras[_view->active_camera]->targety, 0);
     }
-    view->clipX1=0;
-    view->clipX2=0;
-    view->clipY1=0;
-    view->clipY2=0;
-    view->clipZ1=0;
-    view->clipZ2=0;
-    GetOGLPosRef(1, view->h - 5, &(view->clipX1), &(view->clipY1),
-		 &(view->clipZ1));
-    GetOGLPosRef(view->w - 1, 1, &(view->clipX2), &(view->clipY2),
-		 &(view->clipZ2));
+    _view->clipX1=0;
+    _view->clipX2=0;
+    _view->clipY1=0;
+    _view->clipY2=0;
+    _view->clipZ1=0;
+    _view->clipZ2=0;
+    GetOGLPosRef(1, _view->h - 5, &(_view->clipX1), &(_view->clipY1),
+		 &(_view->clipZ1));
+    GetOGLPosRef(_view->w - 1, 1, &(_view->clipX2), &(_view->clipY2),
+		 &(_view->clipZ2));
 
-    if (view->active_camera == -1) {
-	glScalef(1 / view->zoom * -1, 1 / view->zoom * -1,
-		 1 / view->zoom * -1);
+    if (_view->active_camera == -1) {
+	glScalef(1 / _view->zoom * -1, 1 / _view->zoom * -1,
+		 1 / _view->zoom * -1);
     } else {
-	glScalef(1 / view->cameras[view->active_camera]->r,
-		 1 / view->cameras[view->active_camera]->r,
-		 1 / view->cameras[view->active_camera]->r);
+	glScalef(1 / _view->cameras[_view->active_camera]->r,
+		 1 / _view->cameras[_view->active_camera]->r,
+		 1 / _view->cameras[_view->active_camera]->r);
     }
 
 

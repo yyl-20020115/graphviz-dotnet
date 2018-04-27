@@ -154,7 +154,7 @@ generateRandomOrdering(int n, int* permute)
     for (i = 0; i <= n; i++) permute[i] = i;
 
     for (i = 1; i <= n; i++) {
-	j = i + drand48() * (n + 1 - i);
+	j = (int)(i + drand48() * (n + 1 - i));
 	if (j != i) {
 	    tmp = permute[i];
 	    permute [i] = permute[j];

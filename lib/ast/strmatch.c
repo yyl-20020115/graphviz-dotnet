@@ -275,13 +275,13 @@ onematch(Match_t * mp, int g, char *s, char *p, char *e, char *r,
 		n = ++g;
 		if (g < MAXGROUP && (!r || g > mp->current.groups))
 		    mp->current.beg[g] = mp->current.end[g] = 0;
-		if (!(p = gobble(mp, subp, 0, &g, !r)))
+		if ((p = gobble(mp, subp, 0, &g, !r))==0)
 		    RETURN(0);
 		if (pc == '*' || pc == '?' || (pc == '+' && oldp == r)) {
 		    if (onematch(mp, g, s, p, e, NiL, flags))
 			RETURN(1);
 		    if (!sc || !getsource(s, e)) {
-			mp->current.groups = oldg;
+			mp->current.groups =(short) oldg;
 			RETURN(0);
 		    }
 		}
@@ -327,7 +327,7 @@ onematch(Match_t * mp, int g, char *s, char *p, char *e, char *r,
 			}
 		    }
 		} while (s < e && mbgetchar(s));
-		mp->current.groups = oldg;
+		mp->current.groups = (short)oldg;
 		RETURN(0);
 	    } else if (pc == '*') {
 		/*
@@ -355,7 +355,7 @@ onematch(Match_t * mp, int g, char *s, char *p, char *e, char *r,
 		case ')':
 		    mp->current.next_s = (flags & STR_MAXIMAL) ? e : olds;
 		    mp->next_p = oldp;
-		    mp->current.groups = g;
+		    mp->current.groups = (short)g;
 		    if (!pc
 			&& (!mp->best.next_s
 			    || ((flags & STR_MAXIMAL)
@@ -415,7 +415,7 @@ onematch(Match_t * mp, int g, char *s, char *p, char *e, char *r,
 	    if (!sc) {
 		mp->current.next_s = olds;
 		mp->next_p = oldp;
-		mp->current.groups = g;
+		mp->current.groups = (short)g;
 	    }
 	    if (!pc
 		&& (!mp->best.next_s
@@ -424,7 +424,7 @@ onematch(Match_t * mp, int g, char *s, char *p, char *e, char *r,
 			&& olds < mp->best.next_s))) {
 		mp->best = mp->current;
 		mp->best.next_s = olds;
-		mp->best.groups = g;
+		mp->best.groups = (short)g;
 #if _DEBUG_MATCH
 		error(-3, "best#%d groups=%d next=\"%s\"", __LINE__,
 		      mp->best.groups, mp->best.next_s);
@@ -449,7 +449,7 @@ onematch(Match_t * mp, int g, char *s, char *p, char *e, char *r,
 #endif
 		    range = 0;
 		n = 0;
-		if ((invert = (*p == '!')))
+		if ((invert = (*p == '!')) != 0)
 		    p++;
 		for (;;) {
 		    oldp = p;
@@ -585,7 +585,7 @@ onematch(Match_t * mp, int g, char *s, char *p, char *e, char *r,
 			    break;
 			RETURN(0);
 		    } else if (pc == '\\'
-			       && (oldp = p, !(pc = mbgetchar(p)))) {
+			       && ((oldp = p), (pc = mbgetchar(p))==0)) {
 			RETURN(0);
 		    } else if (ok)
 			/*NOP*/;
@@ -666,7 +666,7 @@ onematch(Match_t * mp, int g, char *s, char *p, char *e, char *r,
 		      mp->current.end[n],
 		      mp->current.end[n] - mp->current.beg[n]);
 #endif
-		if (n <= g && (oldp = mp->current.beg[n])) {
+		if (n <= g && (oldp = mp->current.beg[n]) != 0) {
 		    while (oldp < mp->current.end[n])
 			if (!*olds || *olds++ != *oldp++)
 			    RETURN(0);
@@ -705,7 +705,7 @@ grpmatch(Match_t * mp, int g, char *s, register char *p, char *e,
 	for (a = p; onematch(mp, g, s, a, e, NiL, flags); a++)
 	    if (*(a = mp->next_p) != '&')
 		RETURN(1);
-    } while ((p = gobble(mp, p, '|', &g, 1)));
+    } while ((p = gobble(mp, p, '|', &g, 1)) != 0);
     RETURN(0);
 }
 
@@ -732,8 +732,8 @@ int strgrpmatch(const char *b, const char *p, int *sub, int n, int flags)
 	match.best.next_s = 0;
 	match.current.groups = 0;
 	match.current.beg[0] = 0;
-	if ((i = grpmatch(&match, 0, s, (char *) p, e, flags))
-	    || match.best.next_s) {
+	if ((i = grpmatch(&match, 0, s, (char *) p, e, flags))!=0
+	    || match.best.next_s != 0) {
 	    if (!(flags & STR_RIGHT) || (match.current.next_s == e)) {
 		if (!i)
 		    match.current = match.best;

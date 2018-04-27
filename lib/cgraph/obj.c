@@ -252,7 +252,7 @@ int agcontains(Agraph_t* g, void* obj)
 	subg = (Agraph_t *) obj;
 	do {
 	    if (subg == g) return 1;
-	} while ((subg = agparent (subg)));
+	} while ((subg = agparent (subg)) != 0);
 	return 0;
     case AGNODE: 
         return (agidnode(g, AGID(obj), 0) != 0);

@@ -49,6 +49,7 @@
 static double
 getRotation(block_t * sn, Agraph_t * g, double x, double y, double theta)
 {
+	(void)g;
     double mindist2;
     Agraph_t *subg;
     /* Agedge_t* e; */

@@ -100,7 +100,7 @@ static int ijcmpf(Dt_t * d, gridpt * p1, gridpt * p2, Dtdisc_t * disc)
 
     NOTUSED(d);
     NOTUSED(disc);
-    if ((diff = (p1->i - p2->i)))
+    if ((diff = (p1->i - p2->i)) != 0)
 	return diff;
     else
 	return (p1->j - p2->j);

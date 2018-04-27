@@ -307,7 +307,7 @@ static int dfs(Agraph_t * g, Agnode_t * n, Agraph_t * out)
     int cnt = 0;
 
     push(n);
-    while ((n = pop())) {
+    while ((n = pop())!=0) {
 	ND_mark(n) = 1;
 	cnt++;
 	agsubnode(out, n, 1);
@@ -417,7 +417,7 @@ static Agraph_t *projectG(Agraph_t * subg, Agraph_t * g, int inCluster)
     Agnode_t *m;
 
     for (n = agfstnode(subg); n; n = agnxtnode(subg, n)) {
-	if ((m = agfindnode(g, agnameof(n)))) {
+	if ((m = agfindnode(g, agnameof(n))) != 0) {
 	    if (proj == 0) {
 		proj = agsubg(g, agnameof(subg), 1);
 	    }
@@ -450,7 +450,7 @@ subgInduce(Agraph_t * root, Agraph_t * g, int inCluster)
     for (subg = agfstsubg(root); subg; subg = agnxtsubg(subg)) {
 	if (GD_cc_subg(subg))
 	    continue;
-	if ((proj = projectG(subg, g, inCluster))) {
+	if ((proj = projectG(subg, g, inCluster)) != 0) {
 	    in_cluster = inCluster || (useClusters && isCluster(subg));
 	    subgInduce(subg, proj, in_cluster);
 	}

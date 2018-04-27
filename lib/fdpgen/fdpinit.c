@@ -39,7 +39,7 @@ static void initialPositions(graph_t * g)
     if (!possym)
 	return;
     pinsym = agattr(g,AGNODE, "pin", NULL);
-    for (i = 0; (np = GD_neato_nlist(g)[i]); i++) {
+    for (i = 0; (np = GD_neato_nlist(g)[i])!=0; i++) {
 	p = agxget(np, possym);
 	if (p[0]) {
 	    pvec = ND_pos(np);

@@ -326,7 +326,7 @@ void pedge_export_gv(FILE *fp, int ne, pedge *edges){
 	len_total += len;
 	t = edge->wgts[j]/maxwgt;
 	/* interpotate between red (t = 1) to blue (t = 0) */
-	r = 255*t; g = 0; b = 255*(1-t); b = 255*(1-t);
+	r = (int)(255*t); g = 0; b = (int)(255*(1-t)); b = (int)(255*(1-t));
 	if (j != 0) fprintf(fp,":");
 	fprint_rgb(fp, r, g, b, 85);
 	if (j < edge->npoints - 2) fprintf(fp,";%f",len/len_total0);
@@ -558,7 +558,9 @@ static void  edge_attraction_force(real similarity, pedge e1, pedge e2, real *fo
 }
 
 static pedge* force_directed_edge_bundling(SparseMatrix A, pedge* edges, int maxit, real step0, real K, int open_gl){
-  int i, j, ne = A->n, k;
+	(void)open_gl;
+
+	int i, j, ne = A->n, k;
   int *ia = A->ia, *ja = A->ja, iter = 0;
   real *a = (real*) A->a;
   pedge e1, e2;
@@ -710,8 +712,8 @@ static SparseMatrix check_compatibility(SparseMatrix A, int ne, pedge *edges, in
   /* go through the links and make sure edges are compatible */
   SparseMatrix B, C;
   int *ia, *ja, i, j, jj;
-  real start;
-  real dist;
+  real start = 0.0;
+  real dist = 0.0;
 
   B = SparseMatrix_new(1, 1, 1, MATRIX_TYPE_REAL, FORMAT_COORD);
   ia = A->ia; ja = A->ja;

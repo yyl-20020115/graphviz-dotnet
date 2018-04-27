@@ -1842,7 +1842,7 @@ SparseMatrix SparseMatrix_sum_repeat_entries(SparseMatrix A, int what_to_sum){
         }
       } else if (what_to_sum == SUM_REPEATED_REAL_PART){
 	int ymin, ymax, id;
-	ymax = ymin = a[1];
+	ymax = ymin = (int)a[1];
 	nz = 0;
 	for (i = 0; i < A->m; i++){
 	  for (j = ia[i]; j < ia[i+1]; j++){
@@ -1878,7 +1878,7 @@ SparseMatrix SparseMatrix_sum_repeat_entries(SparseMatrix A, int what_to_sum){
 	
       } else if (what_to_sum == SUM_REPEATED_IMAGINARY_PART){
 	int xmin, xmax, id;
-	xmax = xmin = a[1];
+	xmax = xmin =(int) a[1];
 	nz = 0;
 	for (i = 0; i < A->m; i++){
 	  for (j = ia[i]; j < ia[i+1]; j++){
@@ -2546,12 +2546,14 @@ void SparseMatrix_level_sets(SparseMatrix A, int root, int *nlevel, int **levels
 
   int khops = -1;
 
-  return SparseMatrix_level_sets_internal(khops, A, root, nlevel, levelset_ptr, levelset, mask, reinitialize_mask);
+  //return
+	  SparseMatrix_level_sets_internal(khops, A, root, nlevel, levelset_ptr, levelset, mask, reinitialize_mask);
 
 }
 void SparseMatrix_level_sets_khops(int khops, SparseMatrix A, int root, int *nlevel, int **levelset_ptr, int **levelset, int **mask, int reinitialize_mask){
 
-  return SparseMatrix_level_sets_internal(khops, A, root, nlevel, levelset_ptr, levelset, mask, reinitialize_mask);
+  //return 
+	  SparseMatrix_level_sets_internal(khops, A, root, nlevel, levelset_ptr, levelset, mask, reinitialize_mask);
 
 }
 

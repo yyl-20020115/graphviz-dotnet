@@ -92,7 +92,9 @@ static void setdist(Agnode_t * n, double dist)
 static int cmpf(Dt_t * d, void *key1, void *key2, Dtdisc_t * disc)
 {
     double t;
-    t = getdist((Agnode_t *) key1) - getdist((Agnode_t *) key2);
+	(void)disc;
+	(void)d;
+	t = getdist((Agnode_t *) key1) - getdist((Agnode_t *) key2);
     if (t < 0)
 	return -1;
     if (t > 0)
@@ -174,7 +176,7 @@ static void post(Agraph_t * g)
 	    dist--;
 	    sprintf(buf, "%.3lf", dist);
 	    agxset(v, sym, buf);
-	    if (doPath && (prev = getprev(v)))
+	    if (doPath && (prev = getprev(v)) != 0)
 		agxset(v, psym, agnameof(prev));
 	    if (maxdist < dist)
 		maxdist = dist;
@@ -212,14 +214,14 @@ void dijkstra(Dict_t * Q, Agraph_t * G, Agnode_t * n)
     setdist(n, 1);
     dtinsert(Q, n);
     if (doDirected) {
-	while ((u = extract_min(Q))) {
+	while ((u = extract_min(Q))!=0) {
 	    setDone (u);
 	    for (e = agfstout(G, u); e; e = agnxtout(G, e)) {
 		if (!isDone(e->node)) update(Q, e->node, u, getlength(e));
 	    }
 	}
     } else {
-	while ((u = extract_min(Q))) {
+	while ((u = extract_min(Q)) != 0) {
 	    setDone (u);
 	    for (e = agfstedge(G, u); e; e = agnxtedge(G, e, u)) {
 		if (!isDone(e->node)) update(Q, e->node, u, getlength(e));
@@ -306,7 +308,7 @@ int main(int argc, char **argv)
     Q = dtopen(&MyDisc, Dtoset);
     while ((g = nextGraph(&ig)) != 0) {
 	dtclear(Q);
-	if ((n = agnode(g, Nodes[i], 0)))
+	if ((n = agnode(g, Nodes[i], 0)) != 0)
 	    dijkstra(Q, g, n);
 	else {
 	    fprintf(stderr, "%s: no node %s in graph %s in %s\n",

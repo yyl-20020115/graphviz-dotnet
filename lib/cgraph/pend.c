@@ -185,7 +185,7 @@ static void purge(Dict_t * dict, Agobj_t * obj)
 {
     pending_cb_t *handle;
 
-    if ((handle = lookup(dict, obj))) {
+    if ((handle = lookup(dict, obj)) != 0) {
 	dtdelete(dict, handle);
     }
 }
@@ -241,7 +241,7 @@ static void cb(Dict_t * dict, int callback_kind)
     Agcbstack_t *stack;
 
     if (dict)
-	while ((pcb = (pending_cb_t *) dtfirst(dict))) {
+	while ((pcb = (pending_cb_t *) dtfirst(dict)) != 0) {
 	    g = pcb->g;
 	    stack = g->clos->cb;
 	    switch (callback_kind) {
@@ -288,9 +288,9 @@ int agcallbacks(Agraph_t * g, int flag)
     if (flag && NOT(g->clos->callbacks_enabled))
 	agrelease_callbacks(g);
     if (g->clos->callbacks_enabled) {
-	g->clos->callbacks_enabled = flag;
+	g->clos->callbacks_enabled = (unsigned char)flag;
 	return TRUE;
     }
-    g->clos->callbacks_enabled = flag;
+    g->clos->callbacks_enabled = (unsigned char)flag;
     return FALSE;
 }

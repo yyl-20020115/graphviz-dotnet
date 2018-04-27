@@ -309,6 +309,7 @@ int nodename_exists(nodelist_t * list, char *n)
  */
 int node_position(nodelist_t * list, Agnode_t * n)
 {
+	(void)list;
     return POSITION(n);
 #ifdef OLD
     nodelistitem_t *temp;

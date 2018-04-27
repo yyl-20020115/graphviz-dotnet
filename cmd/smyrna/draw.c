@@ -412,6 +412,7 @@ static void SetFont(sdot_op * o, int param)
 /*for now we only support png files in 2d space, no image rotation*/
 static void InsertImage(sdot_op * o, int param)
 {
+	(void)param;
     float x,y;
     glCompImage *i;
 
@@ -435,23 +436,24 @@ static void InsertImage(sdot_op * o, int param)
 
 static void EmbedText(sdot_op* o, int param)
 {
-	GLfloat x,y;
+	(void)param;
+	GLfloat x=0.0f,y = 0.0f;
 	glColor4f(view->penColor.R,view->penColor.G,view->penColor.B,view->penColor.A);
-	view->Topview->global_z=view->Topview->global_z+o->layer*LAYER_DIFF+0.05;
+	view->Topview->global_z=(float)(view->Topview->global_z+o->layer*LAYER_DIFF+0.05);
 	switch (o->op.u.text.align)
 	{
 		case xd_left:
-			x=o->op.u.text.x ;
+			x= (GLfloat)o->op.u.text.x ;
 			break;
 		case xd_center:
-			x=o->op.u.text.x - o->op.u.text.width / 2.0;
+			x= (GLfloat)(o->op.u.text.x - o->op.u.text.width / 2.0);
 			break;
 		case xd_right:
-			x=o->op.u.text.x - o->op.u.text.width;
+			x= (GLfloat)o->op.u.text.x - o->op.u.text.width;
 			break;
 
 	}
-	y=o->op.u.text.y;
+	y=(GLfloat)o->op.u.text.y;
 	if (!o->font)
 	{
 		o->font=glNewFont(
@@ -459,10 +461,10 @@ static void EmbedText(sdot_op* o, int param)
 		xml_string (o->op.u.text.text),
 		&view->penColor,
 		pangotext,
-		font_op->op.u.font.name,font_op->op.u.font.size,0);
+		font_op->op.u.font.name,(int)font_op->op.u.font.size,0);
 		//glNewFont(glCompSet * s, char *text, glCompColor * c, glCompFontType type, char *fontdesc, int fs)*/
 	}
-	glCompDrawText3D(o->font,x,y,view->Topview->global_z,o->op.u.text.width,font_op->op.u.font.size);
+	glCompDrawText3D(o->font,x,y,view->Topview->global_z,(GLfloat)o->op.u.text.width,(GLfloat)font_op->op.u.font.size);
 
 }
 
@@ -602,18 +604,18 @@ void draw_fisheye_magnifier(ViewInfo * view)
 }
 #endif
 
-void drawBorders(ViewInfo * view)
+void drawBorders(ViewInfo * _view)
 {
-    if (view->bdVisible) {
-	glColor4f(view->borderColor.R, view->borderColor.G,
-		  view->borderColor.B, view->borderColor.A);
+    if (_view->bdVisible) {
+	glColor4f(_view->borderColor.R, _view->borderColor.G,
+		_view->borderColor.B, _view->borderColor.A);
 	glLineWidth(2);
 	glBegin(GL_LINE_STRIP);
-	glVertex3d(view->bdxLeft, view->bdyBottom,-0.001);
-	glVertex3d(view->bdxRight, view->bdyBottom,-0.001);
-	glVertex3d(view->bdxRight, view->bdyTop,-0.001);
-	glVertex3d(view->bdxLeft, view->bdyTop,-0.001);
-	glVertex3d(view->bdxLeft, view->bdyBottom,-0.001);
+	glVertex3d(_view->bdxLeft, _view->bdyBottom,-0.001);
+	glVertex3d(_view->bdxRight, _view->bdyBottom,-0.001);
+	glVertex3d(_view->bdxRight, _view->bdyTop,-0.001);
+	glVertex3d(_view->bdxLeft, _view->bdyTop,-0.001);
+	glVertex3d(_view->bdxLeft, _view->bdyBottom,-0.001);
 	glEnd();
 	glLineWidth(1);
     }

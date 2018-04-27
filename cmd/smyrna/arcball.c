@@ -158,6 +158,8 @@ static void arcmouseRClick(ViewInfo * v)
 
 void arcmouseClick(ViewInfo * v)
 {
+	(void)v;
+
     view->arcball->isDragging = 1;	// Prepare For Dragging
     view->arcball->LastRot = view->arcball->ThisRot;	// Set Last Static Rotation To Last Dynamic One
     click(view->arcball, &view->arcball->MousePt);
@@ -167,6 +169,7 @@ void arcmouseClick(ViewInfo * v)
 
 void arcmouseDrag(ViewInfo * v)
 {
+	(void)v;
     Quat4fT ThisQuat;
     drag(view->arcball, &view->arcball->MousePt, &ThisQuat);
     Matrix3fSetRotationFromQuat4f(&view->arcball->ThisRot, &ThisQuat);	// Convert Quaternion Into Matrix3fT

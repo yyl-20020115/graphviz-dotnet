@@ -38,6 +38,9 @@
 
 int pathgetlink(const char *name, char *buf, int siz)
 {
+	(void)siz;
+	(void)buf;
+	(void)name;
 #ifdef _WIN32
 	return (-1);
 #else

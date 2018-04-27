@@ -41,19 +41,21 @@ int APIENTRY WinMain (
     char cmd[256];
     char *path;
     char *s;
+	(void)nCmdShow;
+	(void)hPrevInstance;
 
     ZeroMemory (&si, sizeof(si));
     si.cb = sizeof(si);
     ZeroMemory (&pi, sizeof(pi));
 
     shellpath = getenv ("PATH");
-    if (!shellpath || !(path = buildpath ("lefty"))) {
+    if (!shellpath || (path = buildpath ("lefty"))==0) {
         if (!GetModuleFileName (hInstance, cmd, 256) ||
-                !(s = strrchr (cmd, '\\')))
+                (s = strrchr (cmd, '\\'))==0)
             exit (1);
         *s = 0;
         shellpath = &cmd[0];
-        if (!(path = buildpath ("lefty")))
+        if ((path = buildpath ("lefty"))==0)
             exit (1);
     }
     if (lpCmdLine[0] == 0)
@@ -61,12 +63,16 @@ int APIENTRY WinMain (
 	    cmd, "%s -e \"load('dotty.lefty');%sdotty.init();dotty.createviewandgraph(null,'file',null,null);txtview('off');\"",
 	    path, lneato
         );
-    else
-        sprintf (
-	    cmd, "%s -e \"load('dotty.lefty');%sdotty.init();dotty.createviewandgraph('%Ns','file',null,null);txtview('off');\"",
-            path, lneato, lpCmdLine
-        );
-
+	else {
+		//sprintf(
+		//	cmd, "%s -e \"load('dotty.lefty');%sdotty.init();dotty.createviewandgraph('%Ns','file',null,null);txtview('off');\"",
+		//	path, lneato, lpCmdLine
+		//);
+		sprintf(
+			cmd, "%s -e \"load('dotty.lefty');%sdotty.init();dotty.createviewandgraph('%s','file',null,null);txtview('off');\"",
+			path, lneato, lpCmdLine
+		);
+	}
     CreateProcess (
         NULL,   // No module name (use command line). 
         cmd, // Command line. 
@@ -118,8 +124,11 @@ static char *buildpath (char *file) {
 }
 
 static void panic (char *file, int line, char *func, char *fmt, ...) {
-    va_list args;
-
+    
+	va_list args;
+	(void)file;
+	(void)func;
+	(void)line;
     va_start(args, fmt);
     {
         char buf[256];

@@ -30,7 +30,7 @@ char *fmtbuf(size_t n)
 
     while (++lck)
 	lck--;
-    if (n > (&buf[elementsof(buf)] - nxt))
+    if ((int)n > (&buf[elementsof(buf)] - nxt))
 	nxt = buf;
     cur = nxt;
     nxt += n;

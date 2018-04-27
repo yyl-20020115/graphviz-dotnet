@@ -61,7 +61,7 @@ real* node_data_get_coord(void *d){
 
 int node_data_get_id(void *d){
   node_data nd = (node_data) d;
-  return nd->id;
+  return (int)nd->id;
 }
 
 #define node_data_get_data(d) (((node_data) (d))->data)

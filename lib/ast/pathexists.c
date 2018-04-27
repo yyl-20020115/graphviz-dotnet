@@ -64,15 +64,15 @@ int pathexists(char *path, int mode)
 	*e = 0;
 	for (t = p->tree; t && !streq(s, t->name); t = t->next);
 	if (!t) {
-	    if (!(t = newof(0, Tree_t, 1, strlen(s)))) {
-		*e = c;
+	    if ((t = newof(0, Tree_t, 1, strlen(s)))==0) {
+		*e = (char)c;
 		return 0;
 	    }
 	    strcpy(t->name, s);
 	    t->next = p->tree;
 	    p->tree = t;
-	    if (c) {
-		*e = c;
+	    if (c!=0) {
+		*e = (char)c;
 		for (s = ee = e + 1; *ee && *ee != '/'; ee++);
 		cc = *ee;
 		*ee = 0;
@@ -84,8 +84,8 @@ int pathexists(char *path, int mode)
 		c = cc;
 		if (!x || errno == ENOENT)
 		    t->mode = PATH_READ | PATH_EXECUTE;
-		if (!(p = newof(0, Tree_t, 1, strlen(s)))) {
-		    *e = c;
+		if ((p = newof(0, Tree_t, 1, strlen(s)))==0) {
+		    *e = (char)c;
 		    return 0;
 		}
 		strcpy(p->name, s);
@@ -94,7 +94,7 @@ int pathexists(char *path, int mode)
 		t = p;
 	    }
 	    if (x) {
-		*e = c;
+		*e = (char)c;
 		return 0;
 	    }
 	    if (st.st_mode & (S_IRUSR | S_IRGRP | S_IROTH))
@@ -106,7 +106,7 @@ int pathexists(char *path, int mode)
 	    if (!S_ISDIR(st.st_mode))
 		t->mode |= PATH_REGULAR;
 	}
-	*e++ = c;
+	*e++ = (char)c;
 	if (!t->mode || (c && (t->mode & PATH_REGULAR)))
 	    return 0;
     }

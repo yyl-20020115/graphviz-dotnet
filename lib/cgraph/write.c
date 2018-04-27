@@ -288,7 +288,7 @@ static int write_dict(Agraph_t * g, iochan_t * ofile, char *name,
 static int write_dicts(Agraph_t * g, iochan_t * ofile, int top)
 {
     Agdatadict_t *def;
-    if ((def = agdatadict(g, FALSE))) {
+    if ((def = agdatadict(g, FALSE)) != 0) {
 	CHKRV(write_dict(g, ofile, "graph", def->dict.g, top));
 	CHKRV(write_dict(g, ofile, "node", def->dict.n, top));
 	CHKRV(write_dict(g, ofile, "edge", def->dict.e, top));
@@ -302,7 +302,7 @@ static int write_hdr(Agraph_t * g, iochan_t * ofile, int top)
     int root = 0;
     int hasName = 1;
 
-    Attrs_not_written_flag = AGATTRWF(g);
+    Attrs_not_written_flag = (unsigned char)AGATTRWF(g);
     strict = "";
     if (NOT(top) && agparent(g))
 	kind = "sub";
@@ -361,7 +361,7 @@ static int irrelevant_subgraph(Agraph_t * g)
     name = agnameof(g);
     if (name && name[0] != LOCALNAMEPREFIX)
 	return FALSE;
-    if ((sdata = agattrrec(g)) && (pdata = agattrrec(agparent(g)))) {
+    if ((sdata = agattrrec(g)) != 0 && (pdata = agattrrec(agparent(g))) != 0) {
 	rdata = agattrrec(agroot(g));
 	n = dtsize(rdata->dict);
 	for (i = 0; i < n; i++)
@@ -415,7 +415,7 @@ static int not_default_attrs(Agraph_t * g, Agnode_t * n)
     Agsym_t *sym;
 
     NOTUSED(g);
-    if ((data = agattrrec(n))) {
+    if ((data = agattrrec(n)) != 0) {
 	for (sym = (Agsym_t *) dtfirst(data->dict); sym;
 	     sym = (Agsym_t *) dtnext(data->dict, sym)) {
 	    if (data->str[sym->id] != sym->defval)
@@ -521,7 +521,7 @@ static int write_nodename(Agnode_t * n, iochan_t * ofile)
     if (name) {
 	CHKRV(write_canonstr(g, ofile, name));
     } else {
-	sprintf(buf, "_%ld_SUSPECT", AGID(n));	/* could be deadly wrong */
+	sprintf(buf, "_%lld_SUSPECT", AGID(n));	/* could be deadly wrong */
 	CHKRV(ioput(g, ofile, buf));
     }
     return 0;
@@ -680,7 +680,7 @@ int agwrite(Agraph_t * g, void *ofile)
     char* s;
     int len;
     Level = 0;			/* re-initialize tab level */
-    if ((s = agget(g, "linelength")) && isdigit(*s)) {
+    if ((s = agget(g, "linelength")) != 0 && isdigit(*s) != 0) {
 	len = (int)strtol(s, (char **)NULL, 10);
 	if ((len == 0) || (len >= MIN_OUTPUTLINE))
 	    Max_outputline = len;

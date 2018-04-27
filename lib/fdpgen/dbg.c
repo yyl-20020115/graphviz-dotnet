@@ -477,5 +477,10 @@ void outputGraph(Agraph_t * g, FILE * fp, int expMode)
 {
     pswrite(g, fp, expMode);
 }
+#else
+//DEBUG NOT DEFINED
+void NotDebug()
+{
 
+}
 #endif				/* DEBUG */

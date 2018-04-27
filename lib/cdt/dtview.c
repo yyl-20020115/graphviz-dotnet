@@ -8,10 +8,10 @@
 
 static void* dtvsearch(Dt_t* dt, reg void* obj, reg int type)
 {
-	Dt_t		*d, *p;
-	void		*o, *n, *ok, *nk;
-	int		cmp, lk, sz, ky;
-	Dtcompar_f	cmpf;
+	Dt_t		*d=0, *p = 0;
+	void		*o = 0, *n = 0, *ok = 0, *nk = 0;
+	int		cmp = 0, lk = 0, sz = 0, ky = 0;
+	Dtcompar_f	cmpf = 0;
 
 	/* these operations only happen at the top level */
 	if(type&(DT_INSERT|DT_DELETE|DT_CLEAR|DT_RENEW))

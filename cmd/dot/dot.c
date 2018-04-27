@@ -97,7 +97,7 @@ int main(int argc, char **argv)
     graph_t *prev = NULL;
     int r, rc = 0;
 
-    Gvc = gvContextPlugins(lt_preloaded_symbols, DEMAND_LOADING,TRUE);
+    Gvc = gvContextPlugins(lt_preloaded_symbols, DEMAND_LOADING,0);
     GvExitOnUsage = 1;
     gvParseArgs(Gvc, argc, argv);
 #ifndef _WIN32
@@ -119,12 +119,12 @@ int main(int argc, char **argv)
 	    agclose (G);
 	}
     }
-    else if ((G = gvPluginsGraph(Gvc))) {
+    else if ((G = gvPluginsGraph(Gvc))!=0) {
 	    gvLayoutJobs(Gvc, G);  /* take layout engine from command line */
 	    gvRenderJobs(Gvc, G);
     }
     else {
-	while ((G = gvNextInputGraph(Gvc))) {
+	while ((G = gvNextInputGraph(Gvc))!=0) {
 	    if (prev) {
 		gvFreeLayout(Gvc, prev);
 		agclose(prev);

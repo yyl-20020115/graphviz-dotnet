@@ -18,6 +18,7 @@
 
 static void *idopen(Agraph_t * g, Agdisc_t* disc)
 {
+	(void)disc;
     return g;
 }
 
@@ -148,16 +149,16 @@ char *agnameof(void *obj)
 
     /* perform internal lookup first */
     g = agraphof(obj);
-    if ((rv = aginternalmapprint(g, AGTYPE(obj), AGID(obj))))
+    if ((rv = aginternalmapprint(g, AGTYPE(obj), AGID(obj))) != 0)
 	return rv;
 
     if (AGDISC(g, id)->print) {
 	if ((rv =
-	     AGDISC(g, id)->print(AGCLOS(g, id), AGTYPE(obj), AGID(obj))))
+	     AGDISC(g, id)->print(AGCLOS(g, id), AGTYPE(obj), AGID(obj))) != 0)
 	    return rv;
     }
     if (AGTYPE(obj) != AGEDGE) {
-	sprintf(buf, "%c%ld", LOCALNAMEPREFIX, AGID(obj));
+	sprintf(buf, "%c%lld", LOCALNAMEPREFIX, AGID(obj));
 	rv = buf;
     }
     else

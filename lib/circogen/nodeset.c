@@ -17,6 +17,8 @@
 
 static nsitem_t *mkItem(Dt_t * d, nsitem_t * obj, Dtdisc_t * disc)
 {
+	(void)disc;
+	(void)d;
     nsitem_t *ap = GNEW(nsitem_t);
 
     ap->np = obj->np;
@@ -25,12 +27,15 @@ static nsitem_t *mkItem(Dt_t * d, nsitem_t * obj, Dtdisc_t * disc)
 
 static void freeItem(Dt_t * d, nsitem_t * obj, Dtdisc_t * disc)
 {
+	(void)d;
+	(void)disc;
     free(obj);
 }
 
 static int
 cmpItem(Dt_t * d, Agnode_t ** key1, Agnode_t ** key2, Dtdisc_t * disc)
 {
+	(void)d;
     if (*key1 > *key2)
 	return 1;
     else if (*key1 < *key2)

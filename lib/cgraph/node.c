@@ -74,7 +74,7 @@ static Agnode_t *newnode(Agraph_t * g, IDTYPE id, uint64_t seq)
     n = agalloc(g, sizeof(Agnode_t));
     AGTYPE(n) = AGNODE;
     AGID(n) = id;
-    AGSEQ(n) = seq;
+    AGSEQ(n) =(unsigned int) seq;
     n->root = agroot(g);
     if (agroot(g)->desc.has_attrs)
 	(void) agbindrec(n, AgDataRecName, sizeof(Agattr_t), FALSE);
@@ -104,7 +104,7 @@ static void installnodetoroot(Agraph_t * g, Agnode_t * n)
 {
     Agraph_t *par;
     installnode(g, n);
-    if ((par = agparent(g)))
+    if ((par = agparent(g)) != 0)
 	installnodetoroot(par, n);
 }
 
@@ -124,7 +124,7 @@ Agnode_t *agidnode(Agraph_t * g, IDTYPE id, int cflag)
     n = agfindnode_by_id(g, id);
     if ((n == NILnode) && cflag) {
 	root = agroot(g);
-	if ((g != root) && ((n = agfindnode_by_id(root, id))))	/*old */
+	if ((g != root) != 0 && ((n = agfindnode_by_id(root, id))) != 0)	/*old */
 	    agsubnode(g, n, TRUE);	/* insert locally */
 	else {
 	    if (agallocid(g, AGNODE, id)) {	/* new */
@@ -148,11 +148,11 @@ Agnode_t *agnode(Agraph_t * g, char *name, int cflag)
     root = agroot(g);
     /* probe for existing node */
     if (agmapnametoid(g, AGNODE, name, &id, FALSE)) {
-	if ((n = agfindnode_by_id(g, id)))
+	if ((n = agfindnode_by_id(g, id)) != 0)
 	    return n;
 
 	/* might already exist globally, but need to insert locally */
-	if (cflag && (g != root) && ((n = agfindnode_by_id(root, id)))) {
+	if (cflag && (g != root) != 0 && ((n = agfindnode_by_id(root, id))) != 0) {
 	    return agsubnode(g, n, TRUE);
 	}
     }
@@ -260,7 +260,7 @@ Agnode_t *agsubnode(Agraph_t * g, Agnode_t * n0, int cflag)
 	return NILnode;
     n = agfindnode_by_id(g, AGID(n0));
     if ((n == NILnode) && cflag) {
-	if ((par = agparent(g))) {
+	if ((par = agparent(g)) != 0) {
 	    n = agsubnode(par, n0, cflag);
 	    installnode(g, n);
 	    /* no callback for existing node insertion in subgraph (?) */
@@ -274,7 +274,8 @@ Agnode_t *agsubnode(Agraph_t * g, Agnode_t * n0, int cflag)
 int agsubnodeidcmpf(Dict_t * d, void *arg0, void *arg1, Dtdisc_t * disc)
 {
     Agsubnode_t *sn0, *sn1;
-
+	(void)d;
+	(void)disc;
     sn0 = (Agsubnode_t *) arg0;
     sn1 = (Agsubnode_t *) arg1;
     
@@ -286,6 +287,8 @@ int agsubnodeidcmpf(Dict_t * d, void *arg0, void *arg1, Dtdisc_t * disc)
 int agsubnodeseqcmpf(Dict_t * d, void *arg0, void *arg1, Dtdisc_t * disc)
 {
     Agsubnode_t *sn0, *sn1;
+	(void)d;
+	(void)disc;
 
     sn0 = (Agsubnode_t *) arg0;
     sn1 = (Agsubnode_t *) arg1;
@@ -306,6 +309,8 @@ int agsubnodeseqcmpf(Dict_t * d, void *arg0, void *arg1, Dtdisc_t * disc)
 static void
 free_subnode (Dt_t* d, Agsubnode_t* sn, Dtdisc_t * disc)
 {
+	(void)d;
+	(void)disc;
 
    if (!AGSNMAIN(sn)) 
 	agfree (sn->node->root, sn);
@@ -362,7 +367,7 @@ int agnodebefore(Agnode_t *fst, Agnode_t *snd)
 	/* move snd out of the way somewhere */
 	n = snd;
 	if (agapply (g, (Agobj_t *) n, (agobjfn_t) agnodesetfinger, n, FALSE) != SUCCESS) return FAILURE;
-	AGSEQ(snd) = (g->clos->seq[AGNODE] + 2);
+	AGSEQ(snd) = (unsigned int)(g->clos->seq[AGNODE] + 2);
 	if (agapply (g, (Agobj_t *) n, (agobjfn_t) agnoderenew, n, FALSE) != SUCCESS) return FAILURE;
 	n = agprvnode(g,snd);
 	do {

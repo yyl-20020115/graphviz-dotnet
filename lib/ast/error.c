@@ -52,7 +52,7 @@ void errorv(const char *id, int level, va_list ap)
 	flags = level & ~ERROR_LEVEL;
 	level &= ERROR_LEVEL;
     }
-    if (level && ((s = error_info.id) || (s = (char *) id))) {
+    if (level!=0 && ((s = error_info.id) != 0 || (s = (char *) id) != 0)) {
 	if (flags & ERROR_USAGE)
 	    sfprintf(sfstderr, "Usage: %s ", s);
 	else

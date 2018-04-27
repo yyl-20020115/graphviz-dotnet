@@ -207,7 +207,7 @@ markSmall (cell* cp, sgraph* g)
 	    if (onp->cells[0] == cp) {  /* onp on the right of cp */
 		ocp = onp->cells[1];
 		ocp->flags |= MZ_SMALLV;
-		while ((onp = ocp->sides[M_RIGHT]) && !IsNode(onp->cells[1])) {
+		while ((onp = ocp->sides[M_RIGHT])!=0 && !IsNode(onp->cells[1])) {
 		    ocp = onp->cells[1];
 		    ocp->flags |= MZ_SMALLV;
 		}
@@ -215,7 +215,7 @@ markSmall (cell* cp, sgraph* g)
 	    else {                      /* onp on the left of cp */
 		ocp = onp->cells[0];
 		ocp->flags |= MZ_SMALLV;
-		while ((onp = ocp->sides[M_LEFT]) && !IsNode(onp->cells[0])) {
+		while ((onp = ocp->sides[M_LEFT])!=0 && !IsNode(onp->cells[0])) {
 		    ocp = onp->cells[0];
 		    ocp->flags |= MZ_SMALLV;
 		}
@@ -230,7 +230,7 @@ markSmall (cell* cp, sgraph* g)
 	    if (onp->cells[0] == cp) {  /* onp on the top of cp */
 		ocp = onp->cells[1];
 		ocp->flags |= MZ_SMALLH;
-		while ((onp = ocp->sides[M_TOP]) && !IsNode(onp->cells[1])) {
+		while ((onp = ocp->sides[M_TOP])!=0 && !IsNode(onp->cells[1])) {
 		    ocp = onp->cells[1];
 		    ocp->flags |= MZ_SMALLH;
 		}
@@ -238,7 +238,7 @@ markSmall (cell* cp, sgraph* g)
 	    else {                      /* onp on the bottom of cp */
 		ocp = onp->cells[0];
 		ocp->flags |= MZ_SMALLH;
-		while ((onp = ocp->sides[M_BOTTOM]) && !IsNode(onp->cells[0])) {
+		while ((onp = ocp->sides[M_BOTTOM])!=0 && !IsNode(onp->cells[0])) {
 		    ocp = onp->cells[0];
 		    ocp->flags |= MZ_SMALLH;
 		}

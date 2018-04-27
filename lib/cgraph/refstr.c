@@ -182,7 +182,7 @@ int aghtmlstr(char *s)
     if (s == NULL)
 	return 0;
     key = (refstr_t *) (s - offsetof(refstr_t, store[0]));
-    return (key->refcnt & HTML_BIT);
+    return (int)(key->refcnt & HTML_BIT);
 }
 
 void agmarkhtmlstr(char *s)
